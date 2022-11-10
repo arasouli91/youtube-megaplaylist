@@ -3,19 +3,10 @@ import { useEffect } from "react";
 import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemText from "@mui/material/ListItemText";
-import { FixedSizeList, ListChildComponentProps } from "react-window";
-import { Link } from 'react-router-dom';
+import { FixedSizeList } from "react-window";
 import {
-  Typography,
-  Card,
-  CardContent,
-  CardMedia,
-  Stack,
   Box,
 } from '@mui/material';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-
-import ChannelCard from './ChannelCard';
 import Loader from './Loader';
 
 
@@ -25,7 +16,7 @@ const Videos = ({ videos, curNdx, direction, videoSelected }) => {
   useEffect(() => {
     if (curNdx)
       listRef.current.scrollToItem(curNdx);
-  }, [curNdx]);
+  }, [curNdx, listRef]); ////NOTE: we added listRef, not sure if it will fuck up functionality
 
   if (!videos) return <div>Loading...</div>
 
@@ -59,7 +50,7 @@ const Videos = ({ videos, curNdx, direction, videoSelected }) => {
       >
         <ListItemButton
           className="list-item-btn"
-          selected={index == curNdx ? true : false}
+          selected={index === curNdx ? true : false}
           onClick={handleSelect}
           title={index}
         >
@@ -67,7 +58,7 @@ const Videos = ({ videos, curNdx, direction, videoSelected }) => {
             title={index} className="list-item-ndx">{`${index + 1}`}</div>
 
           <img
-            title={index} src={`${thumbnail}`} className="list-item-img" />
+            title={index} src={`${thumbnail}`} className="list-item-img" alt="t" />
 
           <ListItemText
             title={index} primary={`${videos[index]?.snippet?.title}`} secondary={`${videos[index]?.snippet?.videoOwnerChannelTitle}`} />

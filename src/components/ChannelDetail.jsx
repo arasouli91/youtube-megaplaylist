@@ -21,7 +21,7 @@ const ChannelDetail = () => {
     };
 
     fetchResults();
-  }, []);
+  }, [id]);
 
   if (!videos) <Loader />;
 

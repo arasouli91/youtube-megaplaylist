@@ -1,13 +1,11 @@
-import React, { useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
-import ReactPlayer from 'react-player';
+import React from 'react';
+import { Link } from 'react-router-dom';
 import { Typography, Box, Stack } from '@mui/material';
 import ThumbUpAltOutlinedIcon from '@mui/icons-material/ThumbUpAltOutlined';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import YouTube from "react-youtube";
 
-import { Videos, Loader } from '.';
-import { axiosGetReq } from '../utils';
+import { Loader } from '.';
 
 // We sohuld only know about current video?
 // If so, then we have to ask parent for next video every time video finishes

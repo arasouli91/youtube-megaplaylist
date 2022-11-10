@@ -3,7 +3,7 @@ import { Stack, Box, Typography } from '@mui/material';
 import { useParams } from 'react-router-dom';
 
 import { Videos, VideoDetail2, Loader } from '.';
-import { axiosGetReq, youTubeFetch } from '../utils';
+import { youTubeFetch } from '../utils';
 
 
 const Playlist = ({ random }) => {

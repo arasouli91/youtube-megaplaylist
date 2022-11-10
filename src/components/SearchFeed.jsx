@@ -16,7 +16,7 @@ const SearchFeed = () => {
     };
 
     fetchVideos();
-  }, []);
+  }, [searchTerm]);
 
   return (
     <>
