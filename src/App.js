@@ -4,7 +4,6 @@ import { Box } from '@mui/material';
 import {
   VideoDetail,
   Navbar,
-  Feed,
   Playlist
 } from './components';
 
@@ -18,8 +17,7 @@ const App = () => (
     >
       <Navbar />
       <Switch>
-        <Route exact path='/' component={Feed} />
-        <Route exact path='/playlist' component={Playlist} />
+        <Route exact path='/' component={Playlist} />
         <Route path='/video/:id' component={VideoDetail} />
       </Switch>
     </Box>
