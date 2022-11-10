@@ -18,19 +18,6 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import ChannelCard from './ChannelCard';
 import Loader from './Loader';
 
-///// I can just scrap the this and build it myself
-
-///// You are editing this, but the feed is also using
-
-//// side bar needs:
-/*
-    max-height: 1000px;
-    overflow-y: scroll;
-    flex-direction: row;
-
-    revert whatever else you did here
-    add more params to make this work for side bar and feeds
-*/
 
 const Videos = ({ videos, curNdx, direction, videoSelected }) => {
   const listRef = React.createRef();
@@ -53,73 +40,6 @@ const Videos = ({ videos, curNdx, direction, videoSelected }) => {
     if (videos[index]?.snippet?.title === "Deleted video")
       console.log(videos[index])
 */
-    /** 
-            <Box key={idx}>
-              {item.id && (
-                <Card onClick={(e) => videoSelected(e)}
-                  sx={{
-                    width: { md: '820px', xs: '350px' },
-                    height: 160,
-                    boxShadow: 'none',
-                  }}
-                  direction={'column'}
-                >
-                  <Link
-                    to={
-                      item?.id
-                        ? `/video/${item.id}`
-                        : `/video/cV2gBU6hKfY`
-                    }
-                  >
-                    <CardMedia
-                      component='img'
-                      height='156'
-                      width='50'
-                      image={
-                        item.snippet?.thumbnails?.high.url ||
-                        'https://i.ytimg.com/vi/7PCkvCPvDXk/hqdefault.jpg'
-                      }
-                      alt='green iguana'
-                    />
-                  </Link>
-                  <CardContent>
-                    <Link
-                      to={
-                        item?.id?.videoId
-                          ? `/video/${item.id.videoId}`
-                          : `/video/7PCkvCPvDXk`
-                      }
-                    >
-                      <Typography fontSize='15px' fontWeight={600}>
-                        {item.snippet?.title.slice(0, 60) ||
-                          'Meghan Trainor - All About That Bass'}
-                      </Typography>
-                    </Link>
-                    <Link
-                      to={
-                        item?.snippet?.channelId
-                          ? `/channel/${item.snippet?.channelId}`
-                          : '/channel/UCf3cbfAXgPFL6OywH7JwOzA'
-                      }
-                    >
-                      <Typography fontSize='14px' fontWeight={500}>
-                        {item.snippet?.channelTitle || 'MeghanTrainorVEVO'}
-                        <CheckCircleIcon
-                          sx={{ fontSize: '12px', color: 'gray', ml: '5px' }}
-                        />
-                      </Typography>
-                    </Link>
-                  </CardContent>
-                </Card>
-              )}
-              {item.id.channelId && (
-                <Link to={`/channel/${item.id.channelId}`}>
-                  <ChannelCard channelDetail={item} />
-                </Link>
-              )}
-            </Box>
-            */
-    //
 
     const handleSelect = (e) => {
       // we for some reason can't just pass in the index here, it is always zero

@@ -19,7 +19,7 @@ const VideoDetail2 = ({ video, videoFinished }) => {
   if (!video) <Loader />;
 
   const opts = {
-    height: "150",
+    height: "200",
     width: "1040",
     playerVars: {
       // https://developers.google.com/youtube/player_parameters
