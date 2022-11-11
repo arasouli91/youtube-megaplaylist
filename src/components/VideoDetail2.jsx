@@ -4,7 +4,7 @@ import { Typography, Box, Stack } from '@mui/material';
 import ThumbUpAltOutlinedIcon from '@mui/icons-material/ThumbUpAltOutlined';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import YouTube from "react-youtube";
-
+import { useState } from "react";
 import { Loader } from '.';
 
 // We sohuld only know about current video?
@@ -15,10 +15,19 @@ import { Loader } from '.';
 
 const VideoDetail2 = ({ video, videoFinished }) => {
   if (!video) <Loader />;
+  const [width, setWidth] = useState(document.documentElement.clientWidth);
+
+  function displayWindowSize() {
+    setWidth(document.documentElement.clientWidth);
+    console.log(`update width: ${document.documentElement.clientWidth}`)
+  }
+
+  // Attaching the event listener function to window's resize event
+  window.addEventListener("resize", displayWindowSize);
 
   const opts = {
     height: "200",
-    width: "1040",
+    width: width - 26,
     playerVars: {
       // https://developers.google.com/youtube/player_parameters
       autoplay: 1

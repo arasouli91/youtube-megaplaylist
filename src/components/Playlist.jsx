@@ -1,20 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { Stack, Box, Typography } from '@mui/material';
-import { useParams } from 'react-router-dom';
+import { Stack, Box } from '@mui/material';
 
 import { Videos, VideoDetail2, Loader } from '.';
-import { youTubeFetch } from '../utils';
+import { youTubeFetch, calculateSearchResults } from '../utils';
+import { Navbar } from '.';
 
 
 const Playlist = ({ random }) => {
   // id will either be incremented or random selected when a video finishes
   // or it will be chosen from list
-  const [index, setIndex] = useState(0);/*
-  const [videos, setVideos] = useState([
-    { id: "3D1PNMMdjLI" }, { id: "2BoouwBLMdU" }, { id: "ubQ7jrZMiD4" }, { id: "2BoouwBLMdU" }, { id: "ubQ7jrZMiD4" }, { id: "2BoouwBLMdU" }, { id: "ubQ7jrZMiD4" }, { id: "2BoouwBLMdU" }, { id: "ubQ7jrZMiD4" }, { id: "2BoouwBLMdU" }, { id: "ubQ7jrZMiD4" }, { id: "2BoouwBLMdU" }, { id: "ubQ7jrZMiD4" }, { id: "2BoouwBLMdU" }, { id: "ubQ7jrZMiD4" }, { id: "2BoouwBLMdU" }, { id: "ubQ7jrZMiD4" }, { id: "3D1PNMMdjLI" }, { id: "3D1PNMMdjLI" }, { id: "2BoouwBLMdU" }, { id: "ubQ7jrZMiD4" }, { id: "3D1PNMMdjLI" }, { id: "3D1PNMMdjLI" }, { id: "2BoouwBLMdU" }, { id: "ubQ7jrZMiD4" }, { id: "3D1PNMMdjLI" }, { id: "3D1PNMMdjLI" }, { id: "2BoouwBLMdU" }, { id: "ubQ7jrZMiD4" }, { id: "3D1PNMMdjLI" },
-  ]);*/
+  const [index, setIndex] = useState(0);
   const [videos, setVideos] = useState(null);
-  const { searchTerm } = useParams();
+  const [videoSubset, setVideoSubset] = useState(null);
 
   //// Initially fetch playlist 
   useEffect(() => {
@@ -38,31 +35,33 @@ const Playlist = ({ random }) => {
   const videoSelected = (ndx) => {
     setIndex(ndx);
   }
+  const searchHandler = (search) => {
+    let res = calculateSearchResults(search);
+    res = res.map((ndx) => videos[ndx]);
+    if (res.length > 0) {
+      setIndex(0);
+      setVideoSubset(res);
+    }
+  }
+
   return (
     (videos ?
       <>
-        <Typography
-          fontSize={25}
-          fontWeight={900}
-          p={3}
-          textAlign='center'
-          color='white'
-        >
-          Search Results for {searchTerm} Videos
-        </Typography>
-
+        <Navbar searchHandler={searchHandler} />
         <Stack
           height={2000}
           direction={"column"}
           className='main-stk'>
-          <VideoDetail2 video={videos[index].snippet} videoFinished={videoFinished} />
+          <VideoDetail2 video={videoSubset ? videoSubset[index].snippet : videos[index].snippet} videoFinished={videoFinished} />
           <Box px={1} py={{ md: 1, xs: 5 }}>
-            <Videos videos={videos} curNdx={index} videoSelected={videoSelected} direction='column' />
+            <Videos videos={videoSubset ? videoSubset : videos} curNdx={index} videoSelected={videoSelected} direction='column' />
           </Box>
           {/*<Videos videos={videos} />*/}
         </Stack>
       </>
       : <Loader />));
 };
+
+
 
 export default Playlist;

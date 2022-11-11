@@ -1,27 +1,12 @@
 import axios from 'axios';
 
 let worker = new Worker(new URL('./worker.js', import.meta.url));
-/*worker.onmessage = function (event) {
-  console.log("RETURNED FROM WORKER")
-  console.log(event);
-}*//*
-worker.onmessage = ({ data: { answer } }) => {
-  console.log("RETURNED FROM WORKER")
-  console.log(answer);
-};
-console.log(worker)
-*/
-/*
-worker.postMessage({
-  question:
-    'The Answer to the Ultimate Question of Life, The Universe, and Everything.',
-});*/
+let searchDictWorker = new Worker(new URL('./searchDictWorker.js', import.meta.url));
 
-////////////TEST: FOR TESTING LET'S LEAVE THIS AT 1
 const GET_NEW_LIST_THRESHOLD = 50; // needs to be 50 bcuz that's the most we return from one api call
+const GEN_SEARCH_DICT_THRESHOLD = 1; ///////////NOTE: THIS SHOULD BE 8
 
-const api_key = "AIzaSyCws-v3i9spF2CIAcS3tteO5ojWkQE9dmg";
-//AIzaSyCp843L2L6YUCZDIIcjsefIseZ-w1Cm3pY  //proj1
+const api_key = process.env.REACT_APP_YOUTUBE_API_KEY1;
 const youTubeFetchInner = async (playlist_id, page_token) => {
   try {
     const base_url = 'https://www.googleapis.com/youtube/v3';
@@ -65,7 +50,6 @@ export const youTubeFetch = async (playlist_id) => {
         res = checkLocalCache(partialRes);
         if (res.length > 0) {
           console.log("return cached list")
-          buildSearchDictionary(res);
           // either take local cache or take local cache with added videos diff
           return res;
         }
@@ -97,52 +81,81 @@ export const youTubeFetch = async (playlist_id) => {
   }
 }
 function checkLocalCache(res) {
-
   /// if local cache ends up with more than remote, then we might want to replace local cache bcuz it might be invalid
 
   let previousLength = localStorage.getItem("prevLength");
   let remotePlaylist = res?.items;
-  // compare total retrieved length with cached len
-  if (res?.pageInfo?.totalResults - previousLength > GET_NEW_LIST_THRESHOLD) {
+  let remotePlaylistLength = res?.pageInfo?.totalResults;
+  let diff = remotePlaylistLength - previousLength;
+  // if diff between prev cached length > threshold
+  if (diff > GET_NEW_LIST_THRESHOLD) {
     return []; // go ahead and get entire remote, which will become the new cached
   }
 
   // add to cached playlist
   let cachedPlaylist = localStorage.getObj("playlist");
   let newPlaylist = [];
-  let diff = remotePlaylist.length - previousLength;
   // take diff number of elements from remotePlaylist
   for (var i = 0; i < diff; ++i) {
     newPlaylist.push(remotePlaylist[i]);
   }
   newPlaylist = newPlaylist.concat(cachedPlaylist);
 
+  if (diff > GEN_SEARCH_DICT_THRESHOLD || !sessionStorage.getItem("searchDict")) {
+    buildSearchDictionary(newPlaylist);
+  }
+
   return newPlaylist; // return the cached + new songs
 }
 
 // slim down playlist object and then cache it   ////later need to sort it also
 const savePlaylist = (playlist) => {
-  console.log("savePlaylist")
-
   worker.onmessage = ({ data: { playlist } }) => {
-    console.log("RETURNED FROM WORKER")
-    console.log(playlist);
     localStorage.setObj("playlist", playlist)
   };
   worker.postMessage({ playlist: playlist });
 }
 
+/////////TODO: AFTER WE IMPLEMENT SORTING,
+///////// WE WILL NEED TO CALL THIS AFTER SORTING THE LIST
+///////// BCUZ THE DICTIONARY WILL USE INDICES
+///////// if this is too inconvenient, then after sorting map names to indices
 const buildSearchDictionary = (playlist) => {
-  /*
-    searchDictWorker.onmessage = ({ data: { dictionary } }) => {
-      console.log("RETURNED FROM searchDictWorker")
-      console.log(dictionary);
-      /////// save to session store
-      localStorage.setObj("playlist", playlist)
-    };
-    searchDictWorker.postMessage({ playlist: playlist });
-    */
+  searchDictWorker.onmessage = ({ data: { dict } }) => {
+    console.log("returned from worker", dict);
+    sessionStorage.setObj("searchDict", dict)
+  };
+  searchDictWorker.postMessage({ playlist: playlist });
 }
+
+export const calculateSearchResults = (term) => {
+  console.log("calc results", term)
+  const dict = sessionStorage.getObj("searchDict")
+  const words = term.split(' ');
+  const ndxCounts = {};
+  console.log(dict)
+  for (var k = 0; k < words.length; ++k) {
+    let word = words[k].replace(/[^\w]/g, '');
+    if (word.length === 0 || word === ' ') continue;
+    word = word.toLowerCase();
+
+    console.log("word dict[word]", word, dict[word])
+    if (dict[word]) {
+      // for each index that maps to this word, count it
+      Object.keys(dict[word]).forEach((ndx) => {
+        // count index
+        if (!ndxCounts[ndx]) {
+          ndxCounts[ndx] = 1;
+        } else {
+          ndxCounts[ndx]++;
+        }
+      });
+    }
+  }
+
+  return Object.keys(ndxCounts).sort((a, b) => ndxCounts[b] - ndxCounts[a])
+}
+
 
 
 /////TODO:
@@ -163,19 +176,16 @@ Storage.prototype.getObj = function (key) {
 
 
 
-
-
-
 export const BASE_URL = 'https://youtube-v31.p.rapidapi.com';
 export const options = {
   params: {
     maxResults: 50,
   },
   headers: {
-    'X-RapidAPI-Key': "dd06d9006amsh64cd2bd1911b91bp1d5797jsncfa82c34d726",// process.env.REACT_APP_RAPID_API_KEY,
+    'X-RapidAPI-Key': process.env.REACT_APP_RAPID_API_KEY,
     'X-RapidAPI-Host': 'youtube-v31.p.rapidapi.com',
   },
-};//
+};
 
 export const axiosGetReq = async (url) => {
   const res = await axios.get(`${BASE_URL}/${url}`, options);

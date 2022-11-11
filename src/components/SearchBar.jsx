@@ -1,18 +1,15 @@
 import React, { useState } from 'react';
-import { useHistory } from 'react-router';
 import { Paper, IconButton } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 
-const SearchBar = () => {
+const SearchBar = ({ searchHandler }) => {
   const [searchTerm, setSearchTerm] = useState('');
-  const history = useHistory();
+
 
   const onhandleSubmit = (e) => {
     e.preventDefault();
-
     if (searchTerm) {
-      history.push(`/search/${searchTerm}`);
-      setSearchTerm('');
+      searchHandler(searchTerm);
     }
   };
 
@@ -27,9 +24,10 @@ const SearchBar = () => {
         boxShadow: 'none',
         mr: { sm: 5 },
       }}
+      className="search-bar"
     >
       <input
-        className='search-bar'
+        className='search-bar-input'
         placeholder='Search...'
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}

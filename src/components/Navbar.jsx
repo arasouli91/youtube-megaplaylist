@@ -1,10 +1,8 @@
 import React from 'react';
 import { Stack } from '@mui/material';
-import { Link } from 'react-router-dom';
+import SearchBar from './SearchBar';
 
-import Logo from '../logo.png';
-
-const Navbar = () => (
+const Navbar = ({ searchHandler }) => (
   <Stack
     direction='row'
     alignItems='center'
@@ -19,10 +17,9 @@ const Navbar = () => (
       background: '#000',
       borderBottom: '1px solid #3d3d3d',
     }}
+    className="flex-center"
   >
-    <Link to='/' style={{ display: 'flex', alignItems: 'center' }}>
-      <img src={Logo} alt='logo' height={45} />
-    </Link>
+    <SearchBar searchHandler={searchHandler}></SearchBar>
   </Stack>
 );
 
