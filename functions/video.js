@@ -1,6 +1,12 @@
 /*
-Retrieve videos
-If id is provided, then just retrieve that video
+Responsible for retra given video
+Input:
+-id
+[-likeCount]
+Only works in single increments?
+Do you debounce before calling this api?
+Then you would want to be able to pass in higher values
+
 */
 const { MongoClient } = require("mongodb");
 
@@ -12,11 +18,12 @@ const handler = async (event) => {
     try {
         const database = (await clientPromise).db("youtube");
         const collection = database.collection("video");
+        console.log(event)
 
-        const results = await collection.find({}).toArray();
+        const results = await collection.find({}).limit(1).toArray();
         return {
             statusCode: 200,
-            body: JSON.stringify(results),
+            body: JSON.stringify(results[0]),
         }
 
     } catch (error) {
@@ -25,8 +32,6 @@ const handler = async (event) => {
 }
 
 module.exports = { handler }
-
-
 
 
 /*
