@@ -1,4 +1,8 @@
-var fb = require("firebase");
+/// WANT TO FACTOR ALL THIS OUT
+
+
+import fb from 'firebase/compat/app';
+import 'firebase/compat/auth';
 
 const firebaseConfig = {
     apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
