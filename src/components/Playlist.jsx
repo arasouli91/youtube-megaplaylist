@@ -19,9 +19,14 @@ const Playlist = ({ random }) => {
     const fetchVids = async () => {
       let res = await youTubeFetch("PLmIkV2QRPyhkiEl9jxtKvpIRg50n0rfSj");
       setVideos(res)
-      console.log(res)
+      console.log(res);
+      let resp = await fetch("https://app.netlify.com/sites/youtube-megaplaylist/functions/videos");
+      let videoData = await resp.json();
+      console.log(videoData);
     };
     fetchVids();
+
+
 
   }, []);
 
