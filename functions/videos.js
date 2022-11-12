@@ -27,7 +27,7 @@ return all videos from DB
 */
 exports.handler = function (event, context, callback) {
     //const path = `videos/${event.}`
-    const path = "videos";
+    const path = "videos.json";
 
     get(child(db, path)).then((snapshot) => {
         if (snapshot.exists()) {
