@@ -45,6 +45,7 @@ export const youTubeFetch = async (playlist_id) => {
     let i = 0;
     while (i < 100) { // get up to 5K songs
       let partialRes = await youTubeFetchInner(playlist_id, pagetoken);
+      console.log(partialRes)
       // determine whether to take cached or get whole playlist from remote
       if (i === 0) {
         res = checkLocalCache(partialRes);
