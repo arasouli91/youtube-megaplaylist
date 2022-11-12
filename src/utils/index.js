@@ -45,7 +45,6 @@ export const youTubeFetch = async (playlist_id) => {
     let i = 0;
     while (i < 100) { // get up to 5K songs
       let partialRes = await youTubeFetchInner(playlist_id, pagetoken);
-      console.log(partialRes)
       // determine whether to take cached or get whole playlist from remote
       if (i === 0) {
         res = checkLocalCache(partialRes);
@@ -123,24 +122,20 @@ const savePlaylist = (playlist) => {
 ///////// if this is too inconvenient, then after sorting map names to indices
 const buildSearchDictionary = (playlist) => {
   searchDictWorker.onmessage = ({ data: { dict } }) => {
-    console.log("returned from worker", dict);
     sessionStorage.setObj("searchDict", dict)
   };
   searchDictWorker.postMessage({ playlist: playlist });
 }
 
 export const calculateSearchResults = (term) => {
-  console.log("calc results", term)
   const dict = sessionStorage.getObj("searchDict")
   const words = term.split(' ');
   const ndxCounts = {};
-  console.log(dict)
   for (var k = 0; k < words.length; ++k) {
     let word = words[k].replace(/[^\w]/g, '');
     if (word.length === 0 || word === ' ') continue;
     word = word.toLowerCase();
 
-    console.log("word dict[word]", word, dict[word])
     if (dict[word]) {
       // for each index that maps to this word, count it
       Object.keys(dict[word]).forEach((ndx) => {

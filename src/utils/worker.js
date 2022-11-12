@@ -9,7 +9,6 @@ self.onmessage = ({ data: { question } }) => {
 /* eslint-disable-next-line no-restricted-globals */
 self.onmessage = (e) => {
     if (!e) return;
-    console.log('Message received from main script ', e);
     let playlist = e?.data?.playlist;
     if (!playlist) return;
 
@@ -31,8 +30,6 @@ self.onmessage = (e) => {
             }
         }
     });
-    console.log("done processing playlist in worker postMessage");
-    console.log(resPlaylist)
     /* eslint-disable-next-line no-restricted-globals */
     self.postMessage({
         playlist: resPlaylist,
