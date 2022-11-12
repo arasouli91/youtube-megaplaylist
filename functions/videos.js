@@ -1,8 +1,9 @@
 /// WANT TO FACTOR ALL THIS OUT
+import { initializeApp } from "firebase/app";
+import { getDatabase, get, child } from "firebase/database";
 
-
-import fb from 'firebase/compat/app';
-import 'firebase/compat/auth';
+//import fb from 'firebase/compat/app';
+//import 'firebase/compat/auth';
 
 const firebaseConfig = {
     apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
@@ -15,8 +16,11 @@ const firebaseConfig = {
     measurementId: process.env.REACT_APP_FIREBASE_MEASUREMENT_ID,
 };
 
-fb.initializeApp(firebaseConfig);
-const db = fb.database();
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+//fb.initializeApp(firebaseConfig);
+//const db = fb.getdatabase();
 /*
 videos:
 return all videos from DB
@@ -25,7 +29,7 @@ exports.handler = function (event, context, callback) {
     //const path = `videos/${event.}`
     const path = "videos";
 
-    fb.get(fb.child(db, path)).then((snapshot) => {
+    get(child(db, path)).then((snapshot) => {
         if (snapshot.exists()) {
             console.log(snapshot.val());
         } else {
