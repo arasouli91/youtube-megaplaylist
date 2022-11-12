@@ -1,3 +1,31 @@
+const { MongoClient } = require("mongodb");
+
+const mongoClient = new MongoClient(process.env.REACT_APP_MONGODB_URI);
+
+const clientPromise = mongoClient.connect();
+
+const handler = async (event) => {
+    try {
+        const database = (await clientPromise).db("youtube");
+        const collection = database.collection("video");
+
+        const results = await collection.find({}).limit(10).toArray();
+        return {
+            statusCode: 200,
+            body: JSON.stringify(results),
+        }
+
+    } catch (error) {
+        return { statusCode: 500, body: error.toString() }
+    }
+}
+
+module.exports = { handler }
+
+
+
+
+/*
 /// WANT TO FACTOR ALL THIS OUT
 import { initializeApp } from "firebase/app";
 import { getDatabase, get, child } from "firebase/database";
@@ -18,13 +46,14 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
-
+*/
 //fb.initializeApp(firebaseConfig);
 //const db = fb.getdatabase();
 /*
 videos:
 return all videos from DB
 */
+/*
 exports.handler = function (event, context, callback) {
     //const path = `videos/${event.}`
     const path = "videos.json";
@@ -65,7 +94,8 @@ exports.handler = function (event, context, callback) {
         })
     })
     */
-}
+//}
+
 /*
 exports.handler = async function (event, context) {
     let videos = ["TEST", "TEST"];
