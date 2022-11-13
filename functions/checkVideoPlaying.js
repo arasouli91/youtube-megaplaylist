@@ -18,6 +18,7 @@ const handler = async (event) => {
         const database = (await clientPromise).db("youtube");
         let collection = database.collection("data");
         const id = event.queryStringParameters["id"];
+        let resultStr = `The video ${id} was not currently playing.`;
 
         // check if this video is playing
         let videoPlayingResult = await collection.findOne({ _id: "videoPlaying" });
@@ -30,11 +31,12 @@ const handler = async (event) => {
                 const plays = videoResult.plays + 1;
                 let updateRes = await collection.updateOne({ _id: id }, { $set: { plays: plays } });
                 if (!updateRes) throw new Error("Failed to update play count");
+                resultStr = `The video ${id} was currently playing. Updated play count: ${plays}`;
             }
         }
         return {
             statusCode: 200,
-            body: JSON.stringify("Successfully checked video playing"),
+            body: JSON.stringify(resultStr),
         }
     }
     catch (error) {
