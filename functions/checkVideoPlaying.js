@@ -12,7 +12,6 @@ If video DNE, create new video
 const { MongoClient } = require("mongodb");
 const mongoClient = new MongoClient(process.env.REACT_APP_MONGODB_URI);
 const clientPromise = mongoClient.connect();
-const { findOrCreateUpdateRecord } = require("../src/shared/shared");
 
 const handler = async (event) => {
     try {

@@ -9,8 +9,8 @@ Then you would want to be able to pass in higher values
 
 If video DNE, create new video
 */
+import { findOrCreateUpdateRecord } from "../src/shared/shared";
 const { MongoClient } = require("mongodb");
-const { findOrCreateUpdateRecord } = require("../src/shared/shared");
 
 const mongoClient = new MongoClient(process.env.REACT_APP_MONGODB_URI);
 
