@@ -20,18 +20,22 @@ const handler = async (event) => {
         let collection = database.collection("data");
         const id = event.queryStringParameters["id"];
 
-        // if this video is playing
-        let result = await collection.updateOne({ _id: "videoPlaying" }, { $set: { videoId: id } });
-        if (!result) {
-            throw new Error("wasn't able to update video playing");
+        // check if this video is playing
+        let videoPlayingResult = await collection.findOne({ _id: "videoPlaying" });
+        if (!videoPlayingResult) {
+            throw new Error("wasn't able to check video playing");
+        } else {
+            if (videoPlayingResult.id === id) { // this video is playing
+                // increment the play count for this video
+                let videoResult = await collection.findOne({ _id: id });
+                const plays = videoResult.plays + 1;
+                let updateRes = await collection.updateOne({ _id: id }, { $set: { plays: plays } });
+                if (!updateRes) throw new Error("Failed to update play count");
+            }
         }
-
-        // find or create video
-        collection = database.collection("video");
-        result = await findOrCreateUpdateRecord(collection, id);// will throw if fails
         return {
             statusCode: 200,
-            body: JSON.stringify(result),
+            body: JSON.stringify("Successfully checked video playing"),
         }
     }
     catch (error) {
