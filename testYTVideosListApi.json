@@ -1,0 +1,134 @@
+?part=contentDetails
+,fileDetails,id,player,snippet,statistics,status,topicDetails
+
+// other parts not interesting
+//contentDetails:
+// contentDetails gives us duration
+// items[0].contentDetails.duration
+// PT45M26S
+{
+    "kind": "youtube#videoListResponse",
+    "etag": "f2vLBZNauvjXnKXCdlxF67eaeG4",
+    "items": [
+        {
+            "kind": "youtube#video",
+            "etag": "-1eOkt7bVMZcuE3euce0Dwvdk3I",
+            "id": "hr_XlUfflw8",
+            "contentDetails": {
+                "duration": "PT45M26S",
+                "dimension": "2d",
+                "definition": "hd",
+                "caption": "true",
+                "licensedContent": true,
+                "regionRestriction": {
+                    "blocked": [
+                        "HK",
+                        "ID",
+                        "IN",
+                        "JP",
+                        "KR",
+                        "MO",
+                        "SG",
+                        "TH",
+                        "TW",
+                        "VN"
+                    ]
+                },
+                "contentRating": {},
+                "projection": "rectangular"
+            }
+        }
+    ],
+    "pageInfo": {
+        "totalResults": 1,
+        "resultsPerPage": 1
+    }
+}
+/*YOU MAY BE INTERESTED IN REGION BLOCKING
+looks like you will need a vpn to watch some of your cdramas
+*/
+// snippet
+{
+    "kind": "youtube#videoListResponse",
+    "etag": "kreSEczGoLG4_9EKY9K-xxBz3q8",
+    "items": [
+        {
+            "kind": "youtube#video",
+            "etag": "dxUsd5UhZUHYzTvkvZ4nOiicOgg",
+            "id": "hr_XlUfflw8",
+            "snippet": {
+                "publishedAt": "2022-03-25T14:40:39Z",
+                "channelId": "UCQatgKoA7lylp_UzvsLCgcw",
+                "title": "ENG SUB【余生，请多指教 The Oath of Love】EP03 为给林父治病，林之校搞笑贿赂顾魏（杨紫、肖战）",
+                "description": "WeTV首发全球代言人肖战限量版实体会员卡～你心动了嘛！海外的朋友们来和海鹅一起逛WeTV Store吧! 👉http://bit.ly/wetvstore\n\"Meeting You\" is the best gift! \"The Oath of Love\" is trending on WeTV, are you addicted to Gu Wei? WeTV limited 𝐀𝐦𝐛𝐚𝐬𝐬𝐚𝐝𝐨𝐫 𝐕𝐈𝐏 𝐜𝐚𝐫𝐝 is launching now, come to WeTV Store and get it!👉http://bit.ly/wetvstore\n\n▶Download \"WeTV / Tencent Video (for The US)\" APP to watch more episodes https://wetv.vip/\n▶加入会员 Join Membership Now http://bit.ly/JoinTencentVideo\n▶Join Facebook group to chat about WeTV dramas:\n🔹Global Fans Group: https://bit.ly/wetvglobalfans\n🔸Non-public Group [Only for \"Tencent Video\" YouTube Membership& WeTV/Tencent Video(for the US) VIP] https://bit.ly/wetvvipgroup\n\n☞立即观看全集(DVD Ver.) https://bit.ly/3w4jJVT\n☞立即观看全集(TV Ver.) https://bit.ly/3iHRtR4\n《余生，请多指教》大三音乐系元气少女林之校，不想按照父亲的安排规划人生，希望坚持自己的音乐梦想，却突遭父亲患癌的家庭变故，与正好处在事业低谷、想要放弃外科医生事业的顾魏狭路相逢。林之校身上坚韧、乐观、向阳而生的品质打动了顾魏，而顾魏也始终像一盏灯，默默地温暖着林之校。爱情开始的时候，我们往往都不知道是爱情，两个人从相识、相知到相爱，经历过爱情的甜蜜，同时，也品尝着成长的酸甜苦辣。但无论遇到什么样的难题，他们都不轻言放弃，而是努力让自己变得更加优秀，坚定地靠近对方并托付余生。\n☞主演：杨紫、肖战\n❗正片完整版屏蔽以下地区：\n印度, 印度尼西亚, 哥伦比亚, 墨西哥, 巴西, 新加坡, 日本, 泰国, 中国澳门, 菲律宾, 葡萄牙, 西班牙, 越南, 阿根廷,  韩国, 中国香港, 马来西亚\n\n▶Follow WeTV on:\nFacebook: https://bit.ly/fbwetv\nInstagram: https://bit.ly/inswetv\nTwitter: https://bit.ly/twitterwetv\n▶Find the best WeTV merch on WeTV Store https://wetvstore.com/\n\n00:00 Download \"WeTV/Tencent Video (for The US)\" APP Watch More Episodes\n01:00 Join Membership Watch Full in Advance\n\n⚡️观看精彩剧集⚡️\n♥ 热播新剧♥\n《余生，请多指教(DVD Ver.)》https://bit.ly/3w4jJVT\n《余生，请多指教(TV Ver.)》https://bit.ly/3iHRtR4\n《总裁虐我千百遍》https://bit.ly/3irvdL6\n《追爱家族》https://bit.ly/3wElp91\n《大约是爱2》https://bit.ly/3446Rn4\n《我们的婚姻》https://bit.ly/3uTkuAv\n《骨语2》https://bit.ly/3LEuxPW\n《嫣语赋》https://bit.ly/3AwbHp8\n♥ 爱情甜宠♥\n《我是岁月你是星辰》https://bit.ly/3y1Sjij\n《只是结婚的关系》https://bit.ly/3oTfBEu\n《程序员那么可爱》https://bit.ly/3jRf572\n《你是我的荣耀》https://bit.ly/3Bo01EI\n《我的小确幸》http://bit.ly/3olfqyG\n《甜了青梅配竹马》https://bit.ly/36N8aFW\n《我，喜欢你》https://bit.ly/33rJEXG\n♥ 古装仙侠♥\n《斛珠夫人》https://bit.ly/3bUbb8Z\n《嘉南传》https://bit.ly/3aIVFw2\n《国子监来了个女弟子》https://bit.ly/3tOBaXw\n《千古玦尘》https://bit.ly/35rwOKz\n《遇龙》https://bit.ly/3f3BISn\n《御赐小仵作》https://bit.ly/3aKduLD\n《锦心似玉》http://bit.ly/37B7eE7\n《燕云台》https://bit.ly/3oUieDF\n♥ 经典N刷♥\n《流光之城》https://bit.ly/3r65P1m\n《传闻中的陈芊芊》https://bit.ly/36dqmWY\n《三生三世枕上书》http://bit.ly/3amlwZb\n《陈情令》http://bit.ly/2xr53kg\n《致我们暖暖的小时光》http://bit.ly/tcshoulder\n《龙日一，你死定了S1》http://bit.ly/tcdragon\n《狐狸的夏天S1》http://bit.ly/tcfox1\n♥ 微短剧♥\n《我最亲爱的柳予安》https://bit.ly/3GGEusy\n《给我你的独家宠爱》https://bit.ly/3fThWtr\n《拜托了！别宠我S3》https://bit.ly/3LudHDd\n\n🚀更多火爆综艺🚀\n《半熟恋人》https://bit.ly/3evyF5F\n《令人心动的OfferS3》https://bit.ly/3wBR6Og\n《脱口秀大会S4》https://bit.ly/2VL2tVR\n《德云斗笑社S2》https://bit.ly/3jc2f3b\n《心动的信号S4》https://bit.ly/3vXtQYN\n《吐槽大会S5》https://bit.ly/3r70vt0\n\n✨观看更多精彩动漫✨\n《魔道祖师完结篇》https://bit.ly/3AsrTWX\n《斗罗大陆》https://bit.ly/3780Y7x\n《穿书自救指南》https://bit.ly/3k0Txmq\n《全职高手S2》https://bit.ly/3lL9sFW\n\n🔒马上订阅更多官方频道🔒\n☞ 腾讯视频: http://bit.ly/wetvnew\n☞ 腾讯视频动漫：http://bit.ly/wetvanime\n☞ 腾讯视频热播综艺: https://bit.ly/wetvshow\n☞ 腾讯视频华语经典剧场: https://bit.ly/wetvdrama\n☞ 腾讯视频青春剧场：https://bit.ly/wetvromance\n☞ 腾讯视频古装剧场：https://bit.ly/wetvcostume\n☞ 腾讯视频悬疑剧场：https://bit.ly/wetvsuspense\n☞ 腾讯视频OST精选：https://bit.ly/wetvost\n☞ 企鹅大影院: https://bit.ly/wetvmovie\n☞ 创造营 CHUANG2021: http://bit.ly/CHUANG2021\n☞ WeTV 台灣: http://bit.ly/wetvtw\n☞ WeTV Thailand: http://bit.ly/wetvthaisub\n☞ WeTV Indonesia: http://bit.ly/wetvinsub\n☞ WeTV Vietnam: http://bit.ly/wetvvisub\n☞ WeTV English: http://bit.ly/wetveng\n☞ WeTV Arabic: http://bit.ly/wetvarab\n☞ WeTV Spanish: http://bit.ly/wetvesp\n☞ WeTV Korea: http://bit.ly/wetvkr\n☞ WeTV Turkish: https://bit.ly/wetvtur\n☞ WeTV Russian: https://bit.ly/wetvrus\n☞ WeTV Portuguese: https://bit.ly/wetvpt-br\n☞ WeTV Malaysia: https://bit.ly/wetvmas\n\n#余生请多指教 #杨紫 #肖战 #腾讯视频",
+                "thumbnails": {
+                    "default": {
+                        "url": "https://i.ytimg.com/vi/hr_XlUfflw8/default.jpg",
+                        "width": 120,
+                        "height": 90
+                    },
+                    "medium": {
+                        "url": "https://i.ytimg.com/vi/hr_XlUfflw8/mqdefault.jpg",
+                        "width": 320,
+                        "height": 180
+                    },
+                    "high": {
+                        "url": "https://i.ytimg.com/vi/hr_XlUfflw8/hqdefault.jpg",
+                        "width": 480,
+                        "height": 360
+                    },
+                    "standard": {
+                        "url": "https://i.ytimg.com/vi/hr_XlUfflw8/sddefault.jpg",
+                        "width": 640,
+                        "height": 480
+                    },
+                    "maxres": {
+                        "url": "https://i.ytimg.com/vi/hr_XlUfflw8/maxresdefault.jpg",
+                        "width": 1280,
+                        "height": 720
+                    }
+                },
+                "channelTitle": "腾讯视频",
+                "tags": [
+                    "腾讯视频",
+                    "tencent video",
+                    "wetv",
+                ],
+                "categoryId": "24",
+                "liveBroadcastContent": "none",
+                "defaultLanguage": "zh",
+                "localized": {
+                    "title": "ENG SUB【余生，请多指教 The Oath of Love】EP03 为给林父治病，林之校搞笑贿赂顾魏（杨紫、肖战）",
+                    "description": "WeTV首发全球代言人肖战限量版实体会员卡～你心动了嘛！海外的朋友们来和海鹅一起逛WeTV Store吧! 👉http://bit.ly/wetvstore\n\"Meeting You\" is the best gift! \"The Oath of Love\" is trending on WeTV, are you addicted to Gu Wei? WeTV limited 𝐀𝐦𝐛𝐚𝐬𝐬𝐚𝐝𝐨𝐫 𝐕𝐈𝐏 𝐜𝐚𝐫𝐝 is launching now, come to WeTV Store and get it!👉http://bit.ly/wetvstore\n\n▶Download \"WeTV / Tencent Video (for The US)\" APP to watch more episodes https://wetv.vip/\n▶加入会员 Join Membership Now http://bit.ly/JoinTencentVideo\n▶Join Facebook group to chat about WeTV dramas:\n🔹Global Fans Group: https://bit.ly/wetvglobalfans\n🔸Non-public Group [Only for \"Tencent Video\" YouTube Membership& WeTV/Tencent Video(for the US) VIP] https://bit.ly/wetvvipgroup\n\n☞立即观看全集(DVD Ver.) https://bit.ly/3w4jJVT\n☞立即观看全集(TV Ver.) https://bit.ly/3iHRtR4\n《余生，请多指教》大三音乐系元气少女林之校，不想按照父亲的安排规划人生，希望坚持自己的音乐梦想，却突遭父亲患癌的家庭变故，与正好处在事业低谷、想要放弃外科医生事业的顾魏狭路相逢。林之校身上坚韧、乐观、向阳而生的品质打动了顾魏，而顾魏也始终像一盏灯，默默地温暖着林之校。爱情开始的时候，我们往往都不知道是爱情，两个人从相识、相知到相爱，经历过爱情的甜蜜，同时，也品尝着成长的酸甜苦辣。但无论遇到什么样的难题，他们都不轻言放弃，而是努力让自己变得更加优秀，坚定地靠近对方并托付余生。\n☞主演：杨紫、肖战\n❗正片完整版屏蔽以下地区：\n印度, 印度尼西亚, 哥伦比亚, 墨西哥, 巴西, 新加坡, 日本, 泰国, 中国澳门, 菲律宾, 葡萄牙, 西班牙, 越南, 阿根廷,  韩国, 中国香港, 马来西亚\n\n▶Follow WeTV on:\nFacebook: https://bit.ly/fbwetv\nInstagram: https://bit.ly/inswetv\nTwitter: https://bit.ly/twitterwetv\n▶Find the best WeTV merch on WeTV Store https://wetvstore.com/\n\n00:00 Download \"WeTV/Tencent Video (for The US)\" APP Watch More Episodes\n01:00 Join Membership Watch Full in Advance\n\n⚡️观看精彩剧集⚡️\n♥ 热播新剧♥\n《余生，请多指教(DVD Ver.)》https://bit.ly/3w4jJVT\n《余生，请多指教(TV Ver.)》https://bit.ly/3iHRtR4\n《总裁虐我千百遍》https://bit.ly/3irvdL6\n《追爱家族》https://bit.ly/3wElp91\n《大约是爱2》https://bit.ly/3446Rn4\n《我们的婚姻》https://bit.ly/3uTkuAv\n《骨语2》https://bit.ly/3LEuxPW\n《嫣语赋》https://bit.ly/3AwbHp8\n♥ 爱情甜宠♥\n《我是岁月你是星辰》https://bit.ly/3y1Sjij\n《只是结婚的关系》https://bit.ly/3oTfBEu\n《程序员那么可爱》https://bit.ly/3jRf572\n《你是我的荣耀》https://bit.ly/3Bo01EI\n《我的小确幸》http://bit.ly/3olfqyG\n《甜了青梅配竹马》https://bit.ly/36N8aFW\n《我，喜欢你》https://bit.ly/33rJEXG\n♥ 古装仙侠♥\n《斛珠夫人》https://bit.ly/3bUbb8Z\n《嘉南传》https://bit.ly/3aIVFw2\n《国子监来了个女弟子》https://bit.ly/3tOBaXw\n《千古玦尘》https://bit.ly/35rwOKz\n《遇龙》https://bit.ly/3f3BISn\n《御赐小仵作》https://bit.ly/3aKduLD\n《锦心似玉》http://bit.ly/37B7eE7\n《燕云台》https://bit.ly/3oUieDF\n♥ 经典N刷♥\n《流光之城》https://bit.ly/3r65P1m\n《传闻中的陈芊芊》https://bit.ly/36dqmWY\n《三生三世枕上书》http://bit.ly/3amlwZb\n《陈情令》http://bit.ly/2xr53kg\n《致我们暖暖的小时光》http://bit.ly/tcshoulder\n《龙日一，你死定了S1》http://bit.ly/tcdragon\n《狐狸的夏天S1》http://bit.ly/tcfox1\n♥ 微短剧♥\n《我最亲爱的柳予安》https://bit.ly/3GGEusy\n《给我你的独家宠爱》https://bit.ly/3fThWtr\n《拜托了！别宠我S3》https://bit.ly/3LudHDd\n\n🚀更多火爆综艺🚀\n《半熟恋人》https://bit.ly/3evyF5F\n《令人心动的OfferS3》https://bit.ly/3wBR6Og\n《脱口秀大会S4》https://bit.ly/2VL2tVR\n《德云斗笑社S2》https://bit.ly/3jc2f3b\n《心动的信号S4》https://bit.ly/3vXtQYN\n《吐槽大会S5》https://bit.ly/3r70vt0\n\n✨观看更多精彩动漫✨\n《魔道祖师完结篇》https://bit.ly/3AsrTWX\n《斗罗大陆》https://bit.ly/3780Y7x\n《穿书自救指南》https://bit.ly/3k0Txmq\n《全职高手S2》https://bit.ly/3lL9sFW\n\n🔒马上订阅更多官方频道🔒\n☞ 腾讯视频: http://bit.ly/wetvnew\n☞ 腾讯视频动漫：http://bit.ly/wetvanime\n☞ 腾讯视频热播综艺: https://bit.ly/wetvshow\n☞ 腾讯视频华语经典剧场: https://bit.ly/wetvdrama\n☞ 腾讯视频青春剧场：https://bit.ly/wetvromance\n☞ 腾讯视频古装剧场：https://bit.ly/wetvcostume\n☞ 腾讯视频悬疑剧场：https://bit.ly/wetvsuspense\n☞ 腾讯视频OST精选：https://bit.ly/wetvost\n☞ 企鹅大影院: https://bit.ly/wetvmovie\n☞ 创造营 CHUANG2021: http://bit.ly/CHUANG2021\n☞ WeTV 台灣: http://bit.ly/wetvtw\n☞ WeTV Thailand: http://bit.ly/wetvthaisub\n☞ WeTV Indonesia: http://bit.ly/wetvinsub\n☞ WeTV Vietnam: http://bit.ly/wetvvisub\n☞ WeTV English: http://bit.ly/wetveng\n☞ WeTV Arabic: http://bit.ly/wetvarab\n☞ WeTV Spanish: http://bit.ly/wetvesp\n☞ WeTV Korea: http://bit.ly/wetvkr\n☞ WeTV Turkish: https://bit.ly/wetvtur\n☞ WeTV Russian: https://bit.ly/wetvrus\n☞ WeTV Portuguese: https://bit.ly/wetvpt-br\n☞ WeTV Malaysia: https://bit.ly/wetvmas\n\n#余生请多指教 #杨紫 #肖战 #腾讯视频"
+                },
+                "defaultAudioLanguage": "zh-Hans"
+            }
+        }
+    ],
+    "pageInfo": {
+        "totalResults": 1,
+        "resultsPerPage": 1
+    }
+}
+// statistics:
+{
+    "kind": "youtube#videoListResponse",
+    "etag": "mFPovdezoV9DsVSH6X8CbVIOU7Y",
+    "items": [
+        {
+            "kind": "youtube#video",
+            "etag": "9erojGEh8cEdOXH4Ne-F2o7LWZk",
+            "id": "vpYz3yeXapc",
+            "statistics": {
+                "viewCount": "977568",
+                "likeCount": "7501",
+                "favoriteCount": "0",
+                "commentCount": "236"
+            }
+        }
+    ],
+    "pageInfo": {
+        "totalResults": 1,
+        "resultsPerPage": 1
+    }
+}

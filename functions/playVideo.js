@@ -1,14 +1,12 @@
 /*
-Responsible for retra given video
+Responsible for setting the current playing video
 Input:
 -id
-[-likeCount]
-Only works in single increments?
-Do you debounce before calling this api?
-Then you would want to be able to pass in higher values
-
+If video DNE, create new video
+Returns video
 */
 const { MongoClient } = require("mongodb");
+const { findOrCreateUpdateRecord } = require("../src/shared/shared");
 
 const mongoClient = new MongoClient(process.env.REACT_APP_MONGODB_URI);
 
@@ -17,16 +15,24 @@ const clientPromise = mongoClient.connect();
 const handler = async (event) => {
     try {
         const database = (await clientPromise).db("youtube");
-        const collection = database.collection("video");
-        console.log(event)
+        let collection = database.collection("data");
+        const id = event.queryStringParameters["id"];
 
-        const results = await collection.find({}).limit(1).toArray();
-        return {
-            statusCode: 200,
-            body: JSON.stringify(results[0]),
+        // set video as playing
+        let result = await collection.updateOne({ _id: "videoPlaying" }, { $set: { videoId: id } });
+        if (!result) {
+            throw new Error("wasn't able to update video playing");
         }
 
-    } catch (error) {
+        // find or create video
+        collection = database.collection("video");
+        result = await findOrCreateUpdateRecord(collection, id);// will throw if fails
+        return {
+            statusCode: 200,
+            body: JSON.stringify(result),
+        }
+    }
+    catch (error) {
         return { statusCode: 500, body: error.toString() }
     }
 }

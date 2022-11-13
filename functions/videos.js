@@ -2,18 +2,26 @@
 Retrieve videos
 If id is provided, then just retrieve that video
 */
+import { findOrCreateUpdateRecord } from "../src/shared/shared"
 const { MongoClient } = require("mongodb");
 
 const mongoClient = new MongoClient(process.env.REACT_APP_MONGODB_URI);
 
 const clientPromise = mongoClient.connect();
-
+///// I AM NOT SURE AT ALL IF I HAVE EVERYTHING MAKING SENSE ABOUT
+///// WHAT IS RETURNING AWAITING AND .json()
 const handler = async (event) => {
     try {
+        let results;
         const database = (await clientPromise).db("youtube");
         const collection = database.collection("video");
 
-        const results = await collection.find({}).toArray();
+        const id = event.queryStringParameters["id"];
+        if (id) {
+            results = await findOrCreateUpdateRecord(collection, id);
+        } else {
+            results = await collection.find({}).toArray();
+        }
         return {
             statusCode: 200,
             body: JSON.stringify(results),

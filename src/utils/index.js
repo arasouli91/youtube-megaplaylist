@@ -15,6 +15,8 @@ const youTubeFetchInner = async (playlist_id, page_token) => {
       mode: 'cors',
     };
     let url;
+
+    /////TODO: We need to be able to switch yt api keys if one fails, factor it out
     if (page_token) {
       url = `${base_url}/playlistItems?&part=snippet&playlistId=${playlist_id}&pageToken=${page_token}&maxResults=50&key=${api_key}`;
     }

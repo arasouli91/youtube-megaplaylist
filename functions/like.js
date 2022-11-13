@@ -2,33 +2,46 @@
 Responsible for like/dislike of a given video
 Input:
 -id
-[-likeCount]
+-likeCount
 Only works in single increments?
 Do you debounce before calling this api?
 Then you would want to be able to pass in higher values
 
+If video DNE, create new video
 */
 const { MongoClient } = require("mongodb");
+const { findOrCreateUpdateRecord } = require("../src/shared/shared");
 
 const mongoClient = new MongoClient(process.env.REACT_APP_MONGODB_URI);
 
 const clientPromise = mongoClient.connect();
 
+/*
+queryStringParameters: { ASS: '666', BITCH: '420420420' },
+multiValueQueryStringParameters: { ASS: [ '666' ], BITCH: [ '420420420' ] },
+body: '{\r\n    "test":"TEST DATA DASDASDASDASDASDASDASD"\r\n}',
+path: '/.netlify/functions/videos/123456789',
+*/
+/////CHANGE THIS TO DEFAULT TO LIKING THE CURRENT SONG IF NO ID IS PROVIDED
 const handler = async (event) => {
     try {
         const database = (await clientPromise).db("youtube");
         const collection = database.collection("video");
         console.log(event)
+        const likes = event.queryStringParameters["likes"];
+        const id = event.queryStringParameters["id"];
 
-        //        await collection.
-
-        const results = await collection.find({}).limit(1).toArray();
+        let updates = {
+            likes: likes
+        }
+        // find/update or create
+        let result = await findOrCreateUpdateRecord(collection, id, updates);// will throw if fails
         return {
             statusCode: 200,
-            body: JSON.stringify(results[0]),
+            body: JSON.stringify(result), // this implies result is a json object
         }
-
-    } catch (error) {
+    }
+    catch (error) {
         return { statusCode: 500, body: error.toString() }
     }
 }
