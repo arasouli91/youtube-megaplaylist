@@ -108,7 +108,7 @@ const findOrCreateUpdateRecord = async (collection, id, updateSet = null) => {
     } else {// record exists
         // if we have updates
         if (updateSet) {
-            updateSet = mergeIntoUpdateSet(updateSet, result);
+            updateSet = mergeIntoUpdateSet(result, updateSet);
             console.log("we have updates,", updateSet);
             await collection.updateOne({ _id: id }, { $set: updateSet });
             result = Object.assign(result, updateSet); // update locally
