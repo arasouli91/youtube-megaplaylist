@@ -66,6 +66,7 @@ const findOrCreateUpdateRecord = async (collection, id, props = null) => {
         /////TODO: We need to be able to switch yt api keys if one fails, factor it out
         let uri = `https://youtube.googleapis.com/youtube/v3/videos?part=contentDetails`
             + `&id=${id}&key=${process.env.REACT_APP_YOUTUBE_API_KEY1}`;
+        console.log(uri);
         let ytVideo = await fetch(uri).then(res => res.json());
 
 
