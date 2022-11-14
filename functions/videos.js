@@ -2,7 +2,7 @@
 Retrieve videos
 If id is provided, then just retrieve that video
 */
-import fetch from "node-fetch";
+const fetch = require('node-fetch')
 const { MongoClient } = require("mongodb");
 
 const mongoClient = new MongoClient(process.env.REACT_APP_MONGODB_URI);
