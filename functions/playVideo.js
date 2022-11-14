@@ -5,7 +5,7 @@ Input:
 If video DNE, create new video
 Returns video
 */
-const fetch = require('node-fetch')
+import fetch from 'cross-fetch';
 const { MongoClient } = require("mongodb");
 
 const mongoClient = new MongoClient(process.env.REACT_APP_MONGODB_URI);
@@ -70,7 +70,7 @@ const findOrCreateUpdateRecord = async (collection, id, props = null) => {
         /////TODO: We need to be able to switch yt api keys if one fails, factor it out
         let uri = `https://youtube.googleapis.com/youtube/v3/videos?part=contentDetails`
             + `&id=${id}&key=${process.env.REACT_APP_YOUTUBE_API_KEY1}`;
-        let ytVideo = await fetch(uri).then(res => res.json());
+        let ytVideo = await fetch(uri).then(res => res.json()).catch(error => console.log(error));
 
 
         //"duration": "PT8M5S", can be single or double digit
