@@ -41,32 +41,28 @@ const handler = async (event) => {
 
 module.exports = { handler }
 
-
 //// We copied and pasted these to all the functions bcuz importing it doesn't seem to work
 
-// Merge obj1 properties with obj2 properties
-// Obj1 will be the remote obj, and obj2 will be the updates
-const merge = (obj1, obj2) => {
-    let keys = Object.keys(obj2);
-    // some of them need to be added, some need to be replaced
+const merge = (obj1, obj2, keys) => {
     for (var i = 0; i < keys.length; ++i) {
-        if (keys[i] === "likes" || keys[i] === "plays")
-            obj1[keys[i]] += obj2[keys[i]];
+        if (keys[i] === "likes" || keys[i] === "plays") {
+            obj1[keys[i]] = parseInt(obj1[keys[i]]) + parseInt(obj2[keys[i]]);
+        }
         else
             obj1[keys[i]] = obj2[keys[i]];
     }
 }
 
-// Obj1 is the passed in updates object
+// Merge obj1 properties with obj2 properties
+// Obj1 will be the remote obj, and obj2 will be the updates
+const mergeRecord = (record, updatesObj) => {
+    let keys = Object.keys(updatesObj);
+    merge(record, updatesObj, keys);
+}
 // We will want to take any of those properties from obj2 and merge into obj1
-const mergeProps = (obj1, obj2) => {
-    let keys = Object.keys(obj1); // keys of updates object
-    for (var i = 0; i < keys.length; ++i) {
-        if (keys[i] === "likes" || keys[i] === "plays")
-            obj1[keys[i]] += obj2[keys[i]];
-        else
-            obj1[keys[i]] = obj2[keys[i]];
-    }
+const mergeProps = (updatesObj, record) => {
+    let keys = Object.keys(updatesObj); // keys of updates object
+    merge(updatesObj, record, keys);
 } // the result is the correct updates object to be given to mongodb
 
 const findOrCreateUpdateRecord = async (collection, id, props = null) => {
@@ -95,7 +91,7 @@ const findOrCreateUpdateRecord = async (collection, id, props = null) => {
             };
             // set any properties that deviate from default
             if (props) {
-                merge(obj, props);
+                mergeRecord(obj, props);
             }
             result = await collection.insertOne(obj);
             if (result) {
