@@ -50,11 +50,15 @@ module.exports = { handler }
 
 //// We copied and pasted these to all the functions bcuz importing it doesn't seem to work
 
-// Replace obj1 properties with obj2 properties
+// Merge obj1 properties with obj2 properties
 const merge = (obj1, obj2) => {
     let keys = Object.keys(obj2);
+    // some of them need to be added, some need to be replaced
     for (var i = 0; i < keys.length; ++i) {
-        obj1[keys[i]] = obj2[keys[i]];
+        if (keys[i] === "likes" || keys[i] === "plays")
+            obj1[keys[i]] += obj2[keys[i]];
+        else
+            obj1[keys[i]] = obj2[keys[i]];
     }
 }
 
