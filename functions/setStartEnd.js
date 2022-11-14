@@ -18,11 +18,9 @@ const handler = async (event) => {
     try {
         const database = (await clientPromise).db("youtube");
         const collection = database.collection("video");
-        console.log(event)
         const start = event.queryStringParameters["start"];
         const end = event.queryStringParameters["end"];
         const id = event.queryStringParameters["id"];
-        let statusCode = 200;
 
         let updates = {
             start: start ? start : -1,
@@ -31,7 +29,7 @@ const handler = async (event) => {
         // find/update or create
         let result = await findOrCreateUpdateRecord(collection, id, updates);// will throw if fails
         return {
-            statusCode: statusCode,
+            statusCode: 200,
             body: JSON.stringify(result), // this implies result is a json object
         }
     }
@@ -45,7 +43,7 @@ module.exports = { handler }
 //// We copied and pasted these to all the functions bcuz importing it doesn't seem to work
 
 // for these keys, merge obj2 into obj1
-const mergeInner = (obj1, obj2, keys) => {
+const merge = (obj1, obj2, keys) => {
     for (var i = 0; i < keys.length; ++i) {
         if (keys[i] === "likes" || keys[i] === "plays") {
             obj1[keys[i]] = parseInt(obj1[keys[i]]) + parseInt(obj2[keys[i]]);
@@ -56,20 +54,19 @@ const mergeInner = (obj1, obj2, keys) => {
     return obj1;
 }
 
-// Merge obj1 properties with obj2 properties
-// Obj1 will be the remote obj, and obj2 will be the updates
-const mergeRecord = (record, updatesObj) => {
-    let keys = Object.keys(updatesObj);
-    merge(record, updatesObj, keys);
-}
-// for the properties that exist in updatesObj,
-// find them record, then merge those properties in updatesObj
-const merge = (updatesObj, record) => {
+const mergePropsIntoRecord = (record, updatesObj) => {
     let keys = Object.keys(updatesObj); // keys of updates object
-    return mergeInner(updatesObj, record, keys);
-} // the result is the correct updates object to be given to mongodb
+    return merge(record, updatesObj, keys); // merge into record
+}
 
-const findOrCreateUpdateRecord = async (collection, id, props = null) => {
+// for the properties that exist in updatesObj,
+// find them in record, then merge those properties in updatesObj
+const mergeIntoUpdateSet = (record, updatesObj) => {
+    let keys = Object.keys(updatesObj); // keys of updates object
+    return merge(updatesObj, record, keys); // merge into updateSet
+}
+
+const findOrCreateUpdateRecord = async (collection, id, updateSet = null) => {
     let result = await collection.findOne({ _id: id });
     // if record DNE, fetch from yt api, create new record
     if (!result) {
@@ -95,10 +92,10 @@ const findOrCreateUpdateRecord = async (collection, id, props = null) => {
                 duration: parseInt(minStr) * 60 + parseInt(secStr)
             };
             // set any properties that deviate from default
-            if (props) {
-                props = merge(props, obj);
-                Object.assign(obj, props);
+            if (updateSet) {
+                obj = mergePropsIntoRecord(obj, updateSet);
             }
+            console.log("about to insert", obj);
             result = await collection.insertOne(obj);
             if (result) {
                 return obj; // we created this, so it is same as what we inserted
@@ -110,10 +107,11 @@ const findOrCreateUpdateRecord = async (collection, id, props = null) => {
         }
     } else {// record exists
         // if we have updates
-        if (props) {
-            props = merge(props, result);
-            await collection.updateOne({ _id: id }, { $set: props });
-            result = Object.assign(result, props);
+        if (updateSet) {
+            updateSet = mergeIntoUpdateSet(updateSet, result);
+            console.log("we have updates,", updateSet);
+            await collection.updateOne({ _id: id }, { $set: updateSet });
+            result = Object.assign(result, updateSet); // update locally
         }
     }
     // return what was retrieved or what was updated or what was created
