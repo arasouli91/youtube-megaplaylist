@@ -26,7 +26,7 @@ const handler = async (event) => {
             start: start ? start : -1,
             end: end ? end : -1
         };
-        console.log(`start: ${start}, end: ${end}, id: ${id}`);
+        console.log(`updates ${updates}`);
         // find/update or create
         let result = await findOrCreateUpdateRecord(collection, id, updates);// will throw if fails
         return {
@@ -113,6 +113,7 @@ const findOrCreateUpdateRecord = async (collection, id, updateSet = null) => {
             console.log("we have updates,", updateSet);
             await collection.updateOne({ _id: id }, { $set: updateSet });
             result = Object.assign(result, updateSet); // update locally
+            console.log(result);
         }
     }
     // return what was retrieved or what was updated or what was created
