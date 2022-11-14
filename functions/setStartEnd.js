@@ -26,7 +26,7 @@ const handler = async (event) => {
             start: start ? start : -1,
             end: end ? end : -1
         };
-        console.log(`updates ${updates}`);
+        console.log(`updates ${updates.start} and ${updates.end}`);
         // find/update or create
         const result = await findOrCreateUpdateRecord(collection, id, updates);// will throw if fails
         return {
