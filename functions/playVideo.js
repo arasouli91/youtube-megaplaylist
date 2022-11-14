@@ -5,7 +5,8 @@ Input:
 If video DNE, create new video
 Returns video
 */
-import fetch from 'cross-fetch';
+//import fetch from 'cross-fetch';
+const fetch = require('node-fetch');
 const { MongoClient } = require("mongodb");
 
 const mongoClient = new MongoClient(process.env.REACT_APP_MONGODB_URI);
