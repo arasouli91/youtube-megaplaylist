@@ -21,6 +21,16 @@ const handler = async (event) => {
             results = await findOrCreateUpdateRecord(collection, id);
         } else {
             results = await collection.find({}).toArray();
+            results.sort(compare);
+            let dict = {};
+            // the client will use this dict to find the id of a video and then use the index
+            // as a way to sort on the client side
+            results.forEach((x, index) => {
+                dict[x._id] = {
+                    index: index
+                };
+            });
+            console.log(results);
         }
         return {
             statusCode: 200,
@@ -31,8 +41,25 @@ const handler = async (event) => {
         return { statusCode: 500, body: error.toString() }
     }
 }
+/*
+fetch as an object
+findAll = (req, res) => {
+  File.find({}, function(err, result) {
+    if (err) console.log(err);
+    else {
+      return res.json({ result });
+    }
+  });
+};
+*/
 
 module.exports = { handler }
+
+const compare = (a, b) => {
+    let scoreA = parseInt(a.plays) + parseInt(a.likes);
+    let scoreB = parseInt(b.plays) + parseInt(b.likes);
+    return scoreB - scoreA; // desc
+};
 
 //// We copied and pasted these to all the functions bcuz importing it doesn't seem to work
 

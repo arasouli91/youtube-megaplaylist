@@ -5,6 +5,10 @@ self.onmessage = ({ data: { question } }) => {
   });
 };
 */
+// We are responsible for simplifying the playlist here so that
+// we can store it to local storage.
+// This is done asnychronously because we already have the playlist
+// in state. So, this work here is done for caching and to be used next time we need playlist.
 
 /* eslint-disable-next-line no-restricted-globals */
 self.onmessage = (e) => {

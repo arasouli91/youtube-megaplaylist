@@ -4,6 +4,7 @@ import { Stack, Box } from '@mui/material';
 import { Videos, VideoDetail2, Loader } from '.';
 import { youTubeFetch, calculateSearchResults } from '../utils';
 import { Navbar } from '.';
+let sortWorker = new Worker(new URL('../utils/sortWorker.js', import.meta.url));
 
 
 const Playlist = ({ random }) => {
@@ -20,15 +21,37 @@ const Playlist = ({ random }) => {
       let res = await youTubeFetch("PLmIkV2QRPyhkiEl9jxtKvpIRg50n0rfSj");
       setVideos(res)
       console.log(res);
-      let resp = await fetch("https://youtube-megaplaylist.netlify.app/.netlify/functions/videos");
-      let videoData = await resp.json();
-      console.log(videoData);
     };
     fetchVids();
-
-
-
   }, []);
+
+  // fetch video data from our DB and sort playlist
+  useEffect(() => {
+    if (videos) {
+      console.log("NOW WE WILL BE SORTING THE VIDEOS");
+
+      // fetch video data
+      const fetchVidData = async () => {
+        let data = await fetch("https://youtube-megaplaylist.netlify.app/.netlify/functions/videos").then(resp => resp.json());
+        console.log(data);
+      };
+      let videoData = fetchVidData();
+      // run a web worker
+      // update state from webworker onmessage
+      sortWorker.onmessage = ({ data: { playlist } }) => {
+        setVideos(playlist);
+      };
+      sortWorker.postMessage({ playlist: videos, videoData: videoData });
+    }
+    // i mean, like there are other cases when videos will update and then we end up here
+    // videos update cases: Init,
+    // wont update on: random mode
+    // wont update on search either because we take a sublist on sort
+
+    // think about this tho, the search dictionary either needs to be generated twice 
+    // or it needs to wait for us to sort the playlist in the first place <---- yes let's do that 
+
+  }, [videos, /*sortWorker*/]);
 
   const videoFinished = () => {
     if (random) {
