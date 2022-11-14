@@ -68,6 +68,7 @@ const mergeIntoUpdateSet = (record, updatesObj) => {
 }
 
 const findOrCreateUpdateRecord = async (collection, id, updateSet = null) => {
+    console.log(`inside findOrCreateUpdateRecord ${updateSet}`);
     let result = await collection.findOne({ _id: id });
     // if record DNE, fetch from yt api, create new record
     if (!result) {
