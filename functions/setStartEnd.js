@@ -22,13 +22,13 @@ const handler = async (event) => {
         const end = event.queryStringParameters["end"];
         const id = event.queryStringParameters["id"];
         console.log(`start: ${start}, end: ${end}, id: ${id}`);
-        let updates = {
+        const updates = {
             start: start ? start : -1,
             end: end ? end : -1
         };
         console.log(`updates ${updates}`);
         // find/update or create
-        let result = await findOrCreateUpdateRecord(collection, id, updates);// will throw if fails
+        const result = await findOrCreateUpdateRecord(collection, id, updates);// will throw if fails
         return {
             statusCode: 200,
             body: JSON.stringify(result), // this implies result is a json object
