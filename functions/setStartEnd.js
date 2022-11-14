@@ -21,11 +21,12 @@ const handler = async (event) => {
         const start = event.queryStringParameters["start"];
         const end = event.queryStringParameters["end"];
         const id = event.queryStringParameters["id"];
-
+        console.log(`start: ${start}, end: ${end}, id: ${id}`);
         let updates = {
             start: start ? start : -1,
             end: end ? end : -1
         };
+        console.log(`start: ${start}, end: ${end}, id: ${id}`);
         // find/update or create
         let result = await findOrCreateUpdateRecord(collection, id, updates);// will throw if fails
         return {
@@ -54,7 +55,7 @@ const merge = (obj1, obj2, keys) => {
     return obj1;
 }
 
-const mergePropsIntoRecord = (record, updatesObj) => {
+const mergeIntoRecord = (record, updatesObj) => {
     let keys = Object.keys(updatesObj); // keys of updates object
     return merge(record, updatesObj, keys); // merge into record
 }
@@ -63,7 +64,7 @@ const mergePropsIntoRecord = (record, updatesObj) => {
 // find them in record, then merge those properties in updatesObj
 const mergeIntoUpdateSet = (record, updatesObj) => {
     let keys = Object.keys(updatesObj); // keys of updates object
-    return merge(updatesObj, record, keys); // merge into updateSet
+    return merge(updatesObj, record, keys); // merge into updatesSet
 }
 
 const findOrCreateUpdateRecord = async (collection, id, updateSet = null) => {
@@ -93,7 +94,7 @@ const findOrCreateUpdateRecord = async (collection, id, updateSet = null) => {
             };
             // set any properties that deviate from default
             if (updateSet) {
-                obj = mergePropsIntoRecord(obj, updateSet);
+                obj = mergeIntoRecord(obj, updateSet);
             }
             console.log("about to insert", obj);
             result = await collection.insertOne(obj);
