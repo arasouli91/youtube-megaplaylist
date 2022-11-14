@@ -23,15 +23,22 @@ We need a way to separate all those songs that don't have metrics
 So, we walk through the rest of the list, and push those w/ metrics to one list and w/out to another list
 then sort the metric list, then concat the 3 lists
 
+this not an ideal algo bcuz those w/out metrics dont
+necessarily deserve to be on the bottom
+bcuz some with metrics might have negative score
 */
 
 /* eslint-disable-next-line no-restricted-globals */
 self.onmessage = (e) => {
     if (!e) return;
     let playlist = e?.data?.playlist;
+    console.log("we got playlist in worker",playlist);
     if (!playlist) return;
+    console.log("playlist was not null")
     let videoDict = e?.data?.playlist;
+    console.log("got videoDict in worker");
     if (videoDict) {
+        console.log("videoDict was not null")
         let list1 = [], list2 = [], list3 = [];
 
         // push first 40 songs
@@ -43,6 +50,7 @@ self.onmessage = (e) => {
             let id = playlist[i]?.snippet?.resourceId?.videoId;
             if (videoDict[id]) {
                 list2.push(playlist[i]);
+                console.log("push: " + playlist[i]);
             } else {
                 list3.push(playlist[i]);
             }
@@ -58,6 +66,7 @@ self.onmessage = (e) => {
         list2.sort(comp);
         // concat lists
         playlist = list1.concat(list2).concat(list3);
+        console.log("concat results", playlist);
     }
 
     /* eslint-disable-next-line no-restricted-globals */

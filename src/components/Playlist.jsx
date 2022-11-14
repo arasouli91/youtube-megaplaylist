@@ -13,6 +13,7 @@ const Playlist = ({ random }) => {
   const [index, setIndex] = useState(0);
   const [videos, setVideos] = useState(null);
   const [videoSubset, setVideoSubset] = useState(null);
+  const [listSorted, setListSorted] = useState(false);
   const [videoData, setVideoData] = useState(null); // only really need to store this bcuz useeffect is not async
 
   //// Initially fetch playlist 
@@ -34,16 +35,19 @@ const Playlist = ({ random }) => {
       // fetch video data
       const fetchVidData = async () => {
         let data = await fetch("/.netlify/functions/videos").then(resp => resp.json());
-        console.log(data);
+        console.log("fetched videoData", data);
         setVideoData(data);
       };
+      fetchVidData();
     }
     // wait for videoData to come back from the fetch, then we end up back in useEffect
-      if(videoData){
+      if(videoData && listSorted===false){
         // run a web worker
         // update state from webworker onmessage
         sortWorker.onmessage = ({ data: { playlist } }) => {
           setVideos(playlist);
+          setListSorted(true);
+          console.log("set playlist after sort",playlist)
         };
         sortWorker.postMessage({ playlist: videos, videoData: videoData });
 
