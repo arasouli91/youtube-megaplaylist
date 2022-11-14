@@ -18,10 +18,11 @@ const handler = async (event) => {
     try {
         const database = (await clientPromise).db("youtube");
         const collection = database.collection("video");
-        const start = event.queryStringParameters["start"];
-        const end = event.queryStringParameters["end"];
+        const start = parseInt(event.queryStringParameters["start"]);
+        const end = parseInt(event.queryStringParameters["end"]);
         const id = event.queryStringParameters["id"];
         console.log(`start: ${start}, end: ${end}, id: ${id}`);
+        if(start>=end) throw new Error("start >= end");
         const updates = {
             start: start ? start : -1,
             end: end ? end : -1
@@ -43,32 +44,33 @@ module.exports = { handler }
 
 //// We copied and pasted these to all the functions bcuz importing it doesn't seem to work
 
-// for these keys, merge obj2 into obj1
-const merge = (obj1, obj2, keys) => {
-    for (var i = 0; i < keys.length; ++i) {
-        if (keys[i] === "likes" || keys[i] === "plays") {
-            obj1[keys[i]] = parseInt(obj1[keys[i]]) + parseInt(obj2[keys[i]]);
-        }
-        else
-            obj1[keys[i]] = obj2[keys[i]];
-    }
-    return obj1;
-}
-
 const mergeIntoRecord = (record, updatesObj) => {
     let keys = Object.keys(updatesObj); // keys of updates object
-    return merge(record, updatesObj, keys); // merge into record
+    for (var i = 0; i < keys.length; ++i) {
+        if (keys[i] === "likes" || keys[i] === "plays")
+            record[keys[i]] = parseInt(record[keys[i]]) + parseInt(updatesObj[keys[i]]);
+        else
+            record[keys[i]] = updatesObj[keys[i]];
+    }
 }
 
-// for the properties that exist in updatesObj,
-// find them in record, then merge those properties in updatesObj
+// for the properties that exist in updatesObj, and need to be combined,
+// find them in record, then combine those properties in updatesObj
 const mergeIntoUpdateSet = (record, updatesObj) => {
     let keys = Object.keys(updatesObj); // keys of updates object
-    return merge(updatesObj, record, keys); // merge into updatesSet
+
+    // for the keys of update object
+    for (var i = 0; i < keys.length; ++i) {
+        if (keys[i] === "likes" || keys[i] === "plays") 
+            updatesObj[keys[i]] = parseInt(updatesObj[keys[i]]) + parseInt(record[keys[i]]);
+        // else obj1[keys[i]] = obj2[keys[i]]; // No! updateset doesn't need this
+    }
 }
 
 const findOrCreateUpdateRecord = async (collection, id, updateSet = null) => {
     console.log(`inside findOrCreateUpdateRecord ${updateSet}`);
+    
+    console.log(`updates ${updateSet.start} and ${updateSet.end}`);
     let result = await collection.findOne({ _id: id });
     // if record DNE, fetch from yt api, create new record
     if (!result) {
@@ -81,7 +83,12 @@ const findOrCreateUpdateRecord = async (collection, id, updateSet = null) => {
         //"duration": "PT8M5S", can be single or double digit
         let durationStr = ytVideo.items[0].contentDetails.duration;
         let minStr = durationStr.substr(2);
-        let secStr = durationStr.substr(durationStr.indexOf('M') + 1)
+        let secStr = durationStr.substr(durationStr.indexOf('M') + 1);
+        let duration = parseInt(minStr) * 60 + parseInt(secStr);
+        if(updateSet.end){
+            // don't set end past duration
+            updateSet.end = updateSet.end > duration ? -1 : updateSet.end;
+        }
 
         if (ytVideo) {
             // construct object
@@ -91,11 +98,11 @@ const findOrCreateUpdateRecord = async (collection, id, updateSet = null) => {
                 plays: 1,
                 start: -1,
                 end: -1,
-                duration: parseInt(minStr) * 60 + parseInt(secStr)
+                duration: duration
             };
             // set any properties that deviate from default
             if (updateSet) {
-                obj = mergeIntoRecord(obj, updateSet);
+                mergeIntoRecord(obj, updateSet);
             }
             console.log("about to insert", obj);
             result = await collection.insertOne(obj);
@@ -110,7 +117,13 @@ const findOrCreateUpdateRecord = async (collection, id, updateSet = null) => {
     } else {// record exists
         // if we have updates
         if (updateSet) {
-            updateSet = mergeIntoUpdateSet(result, updateSet);
+            if(updateSet.end){
+                // don't set end past duration
+                updateSet.end = updateSet.end > duration ? -1 : updateSet.end;
+            }
+
+            console.log("we have updates,", updateSet);
+            mergeIntoUpdateSet(result, updateSet);
             console.log("we have updates,", updateSet);
             await collection.updateOne({ _id: id }, { $set: updateSet });
             result = Object.assign(result, updateSet); // update locally
