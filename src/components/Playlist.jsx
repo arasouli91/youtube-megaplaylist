@@ -13,6 +13,7 @@ const Playlist = ({ random }) => {
   const [index, setIndex] = useState(0);
   const [videos, setVideos] = useState(null);
   const [videoSubset, setVideoSubset] = useState(null);
+  const [videoData, setVideoData] = useState(null); // only really need to store this bcuz useeffect is not async
 
   //// Initially fetch playlist 
   useEffect(() => {
@@ -27,22 +28,26 @@ const Playlist = ({ random }) => {
 
   // fetch video data from our DB and sort playlist
   useEffect(() => {
-    if (videos) {
+    if (videos && !videoData) {
       console.log("NOW WE WILL BE SORTING THE VIDEOS");
 
       // fetch video data
       const fetchVidData = async () => {
-        let data = await fetch("https://youtube-megaplaylist.netlify.app/.netlify/functions/videos").then(resp => resp.json());
+        let data = await fetch("/.netlify/functions/videos").then(resp => resp.json());
         console.log(data);
+        setVideoData(data);
       };
-      let videoData = fetchVidData();
-      // run a web worker
-      // update state from webworker onmessage
-      sortWorker.onmessage = ({ data: { playlist } }) => {
-        setVideos(playlist);
-      };
-      sortWorker.postMessage({ playlist: videos, videoData: videoData });
     }
+    // wait for videoData to come back from the fetch, then we end up back in useEffect
+      if(videoData){
+        // run a web worker
+        // update state from webworker onmessage
+        sortWorker.onmessage = ({ data: { playlist } }) => {
+          setVideos(playlist);
+        };
+        sortWorker.postMessage({ playlist: videos, videoData: videoData });
+
+      }
     // i mean, like there are other cases when videos will update and then we end up here
     // videos update cases: Init,
     // wont update on: random mode
@@ -51,7 +56,7 @@ const Playlist = ({ random }) => {
     // think about this tho, the search dictionary either needs to be generated twice 
     // or it needs to wait for us to sort the playlist in the first place <---- yes let's do that 
 
-  }, [videos, /*sortWorker*/]);
+  }, [videos, videoData /*sortWorker*/]);
 
   const videoFinished = () => {
     if (random) {
