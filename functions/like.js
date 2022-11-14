@@ -9,7 +9,8 @@ Then you would want to be able to pass in higher values
 
 If video DNE, create new video
 */
-import fetch from "node-fetch";
+////NOTE: for some reason only require seems to work
+const fetch = require('node-fetch');
 const { MongoClient } = require("mongodb");
 
 const mongoClient = new MongoClient(process.env.REACT_APP_MONGODB_URI);
