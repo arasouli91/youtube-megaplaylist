@@ -85,10 +85,6 @@ const findOrCreateUpdateRecord = async (collection, id, updateSet = null) => {
         let minStr = durationStr.substr(2);
         let secStr = durationStr.substr(durationStr.indexOf('M') + 1);
         let duration = parseInt(minStr) * 60 + parseInt(secStr);
-        if(updateSet.end){
-            // don't set end past duration
-            updateSet.end = updateSet.end > duration ? -1 : updateSet.end;
-        }
 
         if (ytVideo) {
             // construct object
@@ -117,11 +113,6 @@ const findOrCreateUpdateRecord = async (collection, id, updateSet = null) => {
     } else {// record exists
         // if we have updates
         if (updateSet) {
-            if(updateSet.end){
-                // don't set end past duration
-                updateSet.end = updateSet.end > duration ? -1 : updateSet.end;
-            }
-
             console.log("we have updates,", updateSet);
             mergeIntoUpdateSet(result, updateSet);
             console.log("we have updates,", updateSet);

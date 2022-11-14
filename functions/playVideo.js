@@ -65,9 +65,6 @@ const mergeIntoUpdateSet = (record, updatesObj) => {
 }
 
 const findOrCreateUpdateRecord = async (collection, id, updateSet = null) => {
-    console.log(`inside findOrCreateUpdateRecord ${updateSet}`);
-
-    console.log(`updates ${updateSet.start} and ${updateSet.end}`);
     let result = await collection.findOne({ _id: id });
     // if record DNE, fetch from yt api, create new record
     if (!result) {
@@ -75,7 +72,6 @@ const findOrCreateUpdateRecord = async (collection, id, updateSet = null) => {
         let uri = `https://youtube.googleapis.com/youtube/v3/videos?part=contentDetails`
             + `&id=${id}&key=${process.env.REACT_APP_YOUTUBE_API_KEY1}`;
         let ytVideo = await fetch(uri).then(res => res.json());
-
 
         //"duration": "PT8M5S", can be single or double digit
         let durationStr = ytVideo.items[0].contentDetails.duration;
@@ -97,7 +93,6 @@ const findOrCreateUpdateRecord = async (collection, id, updateSet = null) => {
             if (updateSet) {
                 mergeIntoRecord(obj, updateSet);
             }
-            console.log("about to insert", obj);
             result = await collection.insertOne(obj);
             if (result) {
                 return obj; // we created this, so it is same as what we inserted
@@ -110,12 +105,9 @@ const findOrCreateUpdateRecord = async (collection, id, updateSet = null) => {
     } else {// record exists
         // if we have updates
         if (updateSet) {
-            console.log("we have updates,", updateSet);
             mergeIntoUpdateSet(result, updateSet);
-            console.log("we have updates,", updateSet);
             await collection.updateOne({ _id: id }, { $set: updateSet });
             result = Object.assign(result, updateSet); // update locally
-            console.log(result);
         }
     }
     // return what was retrieved or what was updated or what was created
