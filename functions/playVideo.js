@@ -42,6 +42,7 @@ module.exports = { handler }
 //// We copied and pasted these to all the functions bcuz importing it doesn't seem to work
 
 // Merge obj1 properties with obj2 properties
+// Obj1 will be the remote obj, and obj2 will be the updates
 const merge = (obj1, obj2) => {
     let keys = Object.keys(obj2);
     // some of them need to be added, some need to be replaced
@@ -52,6 +53,18 @@ const merge = (obj1, obj2) => {
             obj1[keys[i]] = obj2[keys[i]];
     }
 }
+
+// Obj1 is the passed in updates object
+// We will want to take any of those properties from obj2 and merge into obj1
+const mergeProps = (obj1, obj2) => {
+    let keys = Object.keys(obj1); // keys of updates object
+    for (var i = 0; i < keys.length; ++i) {
+        if (keys[i] === "likes" || keys[i] === "plays")
+            obj1[keys[i]] += obj2[keys[i]];
+        else
+            obj1[keys[i]] = obj2[keys[i]];
+    }
+} // the result is the correct updates object to be given to mongodb
 
 const findOrCreateUpdateRecord = async (collection, id, props = null) => {
     let result = await collection.findOne({ _id: id });
@@ -79,7 +92,7 @@ const findOrCreateUpdateRecord = async (collection, id, props = null) => {
             };
             // set any properties that deviate from default
             if (props) {
-                obj = merge(obj, props);
+                merge(obj, props);
             }
             result = await collection.insertOne(obj);
             if (result) {
@@ -90,10 +103,10 @@ const findOrCreateUpdateRecord = async (collection, id, props = null) => {
         } else {
             throw new Error("youtube video was not created... yt api issue?");
         }
-    } else {
-        // record exists
+    } else {// record exists
         // if we have updates
         if (props) {
+            mergeProps(props, result);
             await collection.updateOne({ _id: id }, { $set: props });
         }
         // else just return what we retrieved and apply update here
