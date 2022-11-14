@@ -44,7 +44,8 @@ module.exports = { handler }
 
 //// We copied and pasted these to all the functions bcuz importing it doesn't seem to work
 
-const merge = (obj1, obj2, keys) => {
+// for these keys, merge obj2 into obj1
+const mergeInner = (obj1, obj2, keys) => {
     for (var i = 0; i < keys.length; ++i) {
         if (keys[i] === "likes" || keys[i] === "plays") {
             obj1[keys[i]] = parseInt(obj1[keys[i]]) + parseInt(obj2[keys[i]]);
@@ -52,6 +53,7 @@ const merge = (obj1, obj2, keys) => {
         else
             obj1[keys[i]] = obj2[keys[i]];
     }
+    return obj1;
 }
 
 // Merge obj1 properties with obj2 properties
@@ -60,10 +62,11 @@ const mergeRecord = (record, updatesObj) => {
     let keys = Object.keys(updatesObj);
     merge(record, updatesObj, keys);
 }
-// We will want to take any of those properties from obj2 and merge into obj1
-const mergeProps = (updatesObj, record) => {
+// for the properties that exist in updatesObj,
+// find them record, then merge those properties in updatesObj
+const merge = (updatesObj, record) => {
     let keys = Object.keys(updatesObj); // keys of updates object
-    merge(updatesObj, record, keys);
+    return mergeInner(updatesObj, record, keys);
 } // the result is the correct updates object to be given to mongodb
 
 const findOrCreateUpdateRecord = async (collection, id, props = null) => {
@@ -93,7 +96,8 @@ const findOrCreateUpdateRecord = async (collection, id, props = null) => {
             };
             // set any properties that deviate from default
             if (props) {
-                mergeRecord(obj, props);
+                props = merge(props, obj);
+                Object.assign(obj, props);
             }
             result = await collection.insertOne(obj);
             if (result) {
@@ -107,11 +111,11 @@ const findOrCreateUpdateRecord = async (collection, id, props = null) => {
     } else {// record exists
         // if we have updates
         if (props) {
-            mergeProps(props, result);
+            props = merge(props, result);
             await collection.updateOne({ _id: id }, { $set: props });
+            result = Object.assign(result, props);
         }
-        // else just return what we retrieved and apply update here
-        result = Object.assign(result, props);
     }
-    return result; // just return the result we found
+    // return what was retrieved or what was updated or what was created
+    return result;
 }
