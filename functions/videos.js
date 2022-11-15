@@ -15,6 +15,7 @@ const handler = async (event) => {
         let results;
         const database = (await clientPromise).db("youtube");
         const collection = database.collection("video");
+        let dict = {};
 
         const id = event.queryStringParameters["id"];
         if (id) {
@@ -22,23 +23,28 @@ const handler = async (event) => {
         } else {
             results = await collection.find({}).toArray();
             results.sort(compare);
-            let dict = {};
             // the client will use this dict to find the id of a video and then use the index
             // as a way to sort on the client side
             results.forEach((x, index) => {
-                dict[x._id] = {
-                    index: index
-                };
+                if(x._id){
+                    let videoId = x._id;
+                    dict[videoId] = index;
+                }
             });
-            console.log(results);
+            console.log(JSON.stringify(dict));
         }
         return {
             statusCode: 200,
-            body: JSON.stringify(results),
+            body: JSON.stringify(dict),
         }
 
     } catch (error) {
-        return { statusCode: 500, body: error.toString() }
+        const err = `${error.lineNumber}:${error.columnNumber}:
+        ${error.fileName}\n
+        ${error.message}\n
+        ${error.stack}`;
+        console.log(err);
+        return { statusCode: 500, body: err }
     }
 }
 /*

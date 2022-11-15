@@ -42,6 +42,11 @@ const handler = async (event) => {
         }
     }
     catch (error) {
+        const err = `${error.lineNumber}:${error.columnNumber}:
+        ${error.fileName}\n
+        ${error.message}\n
+        ${error.stack}`;
+        console.log(err);
         return { statusCode: 500, body: error.toString() }
     }
 }

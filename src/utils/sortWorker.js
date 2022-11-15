@@ -32,11 +32,8 @@ bcuz some with metrics might have negative score
 self.onmessage = (e) => {
     if (!e) return;
     let playlist = e?.data?.playlist;
-    console.log("we got playlist in worker",playlist);
     if (!playlist) return;
-    console.log("playlist was not null")
-    let videoDict = e?.data?.videoDict;
-    console.log("got videoDict in worker",videoDict);
+    let videoDict = e?.data?.videoData;
     if (videoDict) {
         console.log("videoDict was not null")
         let list1 = [], list2 = [], list3 = [];
@@ -46,12 +43,10 @@ self.onmessage = (e) => {
             list1.push(playlist[i]);
         }
         // push those with metrics to list2 and those without to list3
-        for (let i = 10; i < playlist.length; i++) {
+        for (let i = 40; i < playlist.length; i++) {
             let id = playlist[i]?.snippet?.resourceId?.videoId;
-            console.log(`id ${id} videoDict[id] ${videoDict[id]}`);
             if (videoDict[id]) {
                 list2.push(playlist[i]);
-                console.log("push: " + playlist[i]);
             } else {
                 list3.push(playlist[i]);
             }
@@ -67,7 +62,6 @@ self.onmessage = (e) => {
         list2.sort(comp);
         // concat lists
         playlist = list1.concat(list2).concat(list3);
-        console.log("concat results", playlist);
     }
 
     /* eslint-disable-next-line no-restricted-globals */
