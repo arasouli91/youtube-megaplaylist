@@ -1,0 +1,144 @@
+{
+    "id": "1520",
+    "productId": "fa3fa321-8ad7-41dd-874a-18ab98dde0f4",
+    "name": "IP Services",
+    "category": "Product",
+    "description": "Public IP addresses can be associated with Azure customer resources and enable both inbound (Internet to Azure) and external (Azure to Internet or public-facing Azure service).\n\nIP Services has multiple products, labeled in Service Tree as SKUs - 2 for single IPs (Basic IP and Standard IP; the latter is more full-featured with redundancy) and 2 for ranges of IPs (Public IP Prefix and Custom IP Prefix; the latter is for BYOIP where customers bring their own prefixes to Azure).",
+    "tags": "",
+    "hidden": false,
+    "type": 1,
+    "environment": "PPE",
+    "blades": [],
+    "domainFilters": [
+        {
+            "domain": "Support",
+            "filters": [
+                {
+                    "key": "DerivedProductIDStr",
+                    "value": [
+                        "17735"
+                    ],
+                    "isIncluded": true
+                }
+            ]
+        }
+    ],
+    "meters": [
+        {
+            "kpiId": "Microsoft.Networking.PublicIPAddresses",
+            "sortIndex": 100,
+            "state": 1,
+            "onboardingRequestId": "E012B367-B172-437A-BCA6-261F435D91C2",
+            "blade": "ExternalUsage",
+            "onboardingConfigurationType": "Meter Onboarding",
+            "kpiDisplayName": null,
+            "kpiDisplayUnit": "Count",
+            "kpiDisplayDescription": null,
+            "tabGroupMapping": "Primary Metrics, All",
+            "baseKpiIds": "Microsoft.Networking.PublicIPAddresses",
+            "customTabConfig": null,
+            "filters": null,
+            "domain": "ExternalUsage",
+            "templateBaseKpiIdMappingList": null,
+            "isCustomerPageDefaultMeter": true,
+            "aggregationType": 8,
+            "aggregationDimension": null,
+            "overrideKpiId": null
+        },
+        {
+            "kpiId": "Microsoft.Networking.PublicIPPrefixes",
+            "sortIndex": 100,
+            "state": 1,
+            "onboardingRequestId": "FA47AAD4-7F23-4C06-9575-3896087A5316",
+            "blade": "ExternalUsage",
+            "onboardingConfigurationType": "Meter Onboarding",
+            "kpiDisplayName": null,
+            "kpiDisplayUnit": "Count",
+            "kpiDisplayDescription": null,
+            "tabGroupMapping": "Primary Metrics, All",
+            "baseKpiIds": "Microsoft.Networking.PublicIPPrefixes",
+            "customTabConfig": null,
+            "filters": null,
+            "domain": "ExternalUsage",
+            "templateBaseKpiIdMappingList": null,
+            "isCustomerPageDefaultMeter": true,
+            "aggregationType": 8,
+            "aggregationDimension": null,
+            "overrideKpiId": null
+        },
+        {
+            "kpiId": "Billing.NETWORKING.ReservedIPHours",
+            "sortIndex": 101,
+            "state": 1,
+            "onboardingRequestId": null,
+            "blade": "ExternalUsage",
+            "onboardingConfigurationType": null,
+            "kpiDisplayName": null,
+            "kpiDisplayUnit": null,
+            "kpiDisplayDescription": null,
+            "tabGroupMapping": "Primary Metrics, All",
+            "baseKpiIds": "Billing.NETWORKING.ReservedIPHours",
+            "customTabConfig": null,
+            "filters": null,
+            "domain": "ExternalUsage",
+            "templateBaseKpiIdMappingList": null,
+            "isCustomerPageDefaultMeter": false,
+            "aggregationType": 0,
+            "aggregationDimension": null,
+            "overrideKpiId": null
+        },
+        {
+            "kpiId": "Billing.NETWORKING.ReservedIPRemaps",
+            "sortIndex": 101,
+            "state": 1,
+            "onboardingRequestId": null,
+            "blade": "ExternalUsage",
+            "onboardingConfigurationType": null,
+            "kpiDisplayName": null,
+            "kpiDisplayUnit": null,
+            "kpiDisplayDescription": null,
+            "tabGroupMapping": "Primary Metrics, All",
+            "baseKpiIds": "Billing.NETWORKING.ReservedIPRemaps",
+            "customTabConfig": null,
+            "filters": null,
+            "domain": "ExternalUsage",
+            "templateBaseKpiIdMappingList": null,
+            "isCustomerPageDefaultMeter": false,
+            "aggregationType": 0,
+            "aggregationDimension": null,
+            "overrideKpiId": null
+        },
+        {
+            "kpiId": "Billing.NETWORKING.PublicIPAddressHours",
+            "sortIndex": 101,
+            "state": 1,
+            "onboardingRequestId": null,
+            "blade": "ExternalUsage",
+            "onboardingConfigurationType": null,
+            "kpiDisplayName": "Public IP Address Hours",
+            "kpiDisplayUnit": "Hours",
+            "kpiDisplayDescription": null,
+            "tabGroupMapping": "Primary Metrics, All",
+            "baseKpiIds": "Billing.NETWORKING.PublicIPAddressHours",
+            "customTabConfig": null,
+            "filters": null,
+            "domain": "ExternalUsage",
+            "templateBaseKpiIdMappingList": null,
+            "isCustomerPageDefaultMeter": true,
+            "aggregationType": 0,
+            "aggregationDimension": null,
+            "overrideKpiId": null
+        }
+    ],
+    "_rid": "Zwp7AM4k1fYkDj0AAAAAAA==",
+    "_self": "dbs/Zwp7AA==/colls/Zwp7AM4k1fY=/docs/Zwp7AM4k1fYkDj0AAAAAAA==/",
+    "_etag": "\"53013572-0000-0700-0000-636ebd970000\"",
+    "_attachments": "attachments/",
+    "_ts": 1668201879
+}
+{
+    "kpiId": "Billing.NETWORKING.PublicIPAddressHours",
+    "resourceGuids": [
+        "f114cb19-ea64-40b5-bcd7-aee474b62853"
+    ]
+}

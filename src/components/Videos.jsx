@@ -26,6 +26,7 @@ const Videos = ({ videos, curNdx, videoSelected }) => {
   if (!videos) return <div>Loading...</div>
 
   function displayWindowSize() {
+    document.querySelector(".main-stk div:nth-child(3)")?.classList.add("videos-root");
     if (document.documentElement.clientWidth < 680) {
       setListWidth(document.documentElement.clientWidth - 20);
     }
@@ -86,7 +87,7 @@ const Videos = ({ videos, curNdx, videoSelected }) => {
     {videos ? (
       <>
         <Box
-          sx={{ width: '100%', height: 800, maxWidth: 820 }}
+          sx={{ width: '100%', height: 800, maxWidth: 820, paddingTop: '0' }}
           className={"list"}
         >
           <FixedSizeList

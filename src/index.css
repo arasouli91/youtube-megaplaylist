@@ -53,9 +53,50 @@ a {
   color: white !important;
 }
 
+.button {
+  cursor: pointer;
+}
+
 .react-player {
   height: 77vh !important;
   width: 100% !important;
+}
+
+.vid-bar {
+  display: flex;
+  color: #d0d0d0;
+  width: 100%;
+  padding-left: 15px;
+  font-weight: 600;
+  padding-bottom: 5px;
+}
+
+.vid-bar-item1 {
+  flex-grow: 100;
+}
+
+.vid-bar-top {
+  padding-right: 14px;
+}
+
+.vid-bar-bottom {
+  padding-top: 6px;
+  display: flex;
+}
+
+.vid-bar-bottom span {
+  padding-right: 12px;
+  font-weight: 400;
+  margin-top: -4px;
+}
+
+.vid-bar-link {
+  color: rgb(167, 225, 219);
+  font-weight: 700;
+}
+
+.videos-root {
+  padding-top: 0 !important;
 }
 
 .list {

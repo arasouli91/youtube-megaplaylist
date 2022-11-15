@@ -30,6 +30,9 @@ bcuz some with metrics might have negative score
 
 /* eslint-disable-next-line no-restricted-globals */
 self.onmessage = (e) => {
+    ///////// WE ARE GOING TO WANT TO STORE VIDEO DATA IN SESSION STORAGE AFTER ALL
+    ///// WE NEED IT FOR START AND END TIMES....in which case we will have to adjust this algo
+    ///// because we will instead be given an object item instead of just an index
     if (!e) return;
     let playlist = e?.data?.playlist;
     if (!playlist) return;
