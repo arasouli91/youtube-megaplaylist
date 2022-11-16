@@ -51,16 +51,7 @@ const Playlist = ({ random }) => {
         console.log("set playlist after sort", playlist)
       };
       sortWorker.postMessage({ playlist: videos, videoData: videoData });
-
     }
-    // i mean, like there are other cases when videos will update and then we end up here
-    // videos update cases: Init,
-    // wont update on: random mode
-    // wont update on search either because we take a sublist on sort
-
-    // think about this tho, the search dictionary either needs to be generated twice 
-    // or it needs to wait for us to sort the playlist in the first place <---- yes let's do that 
-
   }, [videos, videoData /*sortWorker*/]);
 
   useEffect(() => {
@@ -71,11 +62,12 @@ const Playlist = ({ random }) => {
     setVideoDetails(videoPlaying);
     // then, fetch other details and play video in DB
     const playVideo = async (videoPlaying) => {
-      let data = await fetch(`/.netlify/functions/playVideo?id=${videoPlaying?.resourceId?.videoId}`)
+      console.log("playVideo")
+      let videoData = await fetch(`/.netlify/functions/playVideo?id=${videoPlaying?.resourceId?.videoId}`)
         .then(resp => resp.json());
-      console.log("fetched videoDetails", data);
+      console.log("fetched videoDetails", videoData);
       // update vidoeDetails state again so that VideoBar rerenders
-      setVideoDetails(Object.assign(VideoDetails));
+      setVideoDetails(Object.assign(videoPlaying,videoData));
       //// ALL START/END TIME INFO ACTUALLY NEEDS TO COME INITIALLY if we want to actually apply to the video player
       // we want to take -1 so that we can avoid passing extra params to video player
       //// we can probably put all this in session storage
@@ -83,12 +75,18 @@ const Playlist = ({ random }) => {
       const start = VideoDetails.start > 0 ? VideoDetails.start : -1;
       const end = VideoDetails.end > 0 ? (VideoDetails.end < VideoDetails.duration ? VideoDetails.end : -1) : -1;
       */
-      const start = VideoDetails.start > 0 ? VideoDetails.start : 0;
-      const end = VideoDetails.end > 0 ? (VideoDetails.end < VideoDetails.duration ? VideoDetails.end : duration) : duration;
-      const halftime = Math.floor((end - start) / 2) * 10; // half and convert to ms
+      const start = videoData.start > 0 ? videoData.start : 0;
+      const end = videoData.end > 0 
+      ? (videoData.end < videoData.duration ? videoData.end : videoData.duration) 
+      : videoData.duration;
+      console.log(`start ${start}, end ${end}`);
+      const halftime = Math.floor((end - start) / 2) * 1000; // half and convert to ms
       // set timeout to check if song is still playing after 50% of duration
+      console.log(`halftime ${halftime}`);
       setTimeout(async () => {
-        await fetch(`/.netlify/functions/checkVideoPlaying?id=${VideoDetails._id}`)
+        console.log("in timeout callback halftime,",halftime);
+        console.log(`videodetails._id ${videoData._id}`);
+        await fetch(`/.netlify/functions/checkVideoPlaying?id=${videoData._id}`)
       }, halftime);
     };
     playVideo(videoPlaying);

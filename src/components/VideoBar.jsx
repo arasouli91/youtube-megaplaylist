@@ -20,7 +20,7 @@ const VideoBar = ({ video, setChannel }) => {
   if (!video) <Loader />;
 
   const handleLikes = async (likes) => {
-    await fetch(`/.netlify/functions/checkVideoPlaying?id=${video._id}&likes=${likes}`)
+    await fetch(`/.netlify/functions/like?id=${video._id}&likes=${likes}`)
   }
   const skipSong = async () => {
     //////// we should call video selected with next index
