@@ -15,9 +15,10 @@ const Playlist = ({ random }) => {
   const [VideoDetails, setVideoDetails] = useState(null);
   const [videoSubset, setVideoSubset] = useState(null);
   const [listSorted, setListSorted] = useState(false);
-  const [videoData, setVideoData] = useState(null); // only really need to store this bcuz useeffect is not async
+  // this is asynchronously loaded after the playlist and is used for sorting playlist
+  const [videoData, setVideoData] = useState(null); 
 
-  //// Initially fetch playlist 
+  // Initially fetch playlist 
   useEffect(() => {
 
     const fetchVids = async () => {
@@ -30,7 +31,9 @@ const Playlist = ({ random }) => {
 
   // fetch video data from our DB and sort playlist
   useEffect(() => {
+    console.log("videos or videoData changed")
     if (videos && !videoData) {
+      console.log("  in first block")
       console.log("NOW WE WILL BE SORTING THE VIDEOS");
 
       // fetch video data
@@ -40,9 +43,10 @@ const Playlist = ({ random }) => {
         setVideoData(data);
       };
       fetchVidData();
-    }
+    }/////why don't put below block into fetchVidData above??..it works like this...
     // wait for videoData to come back from the fetch, then we end up back in useEffect
-    if (videoData && listSorted === false) {
+    if (videoData && listSorted === false) {     
+      console.log("  in second block")
       // run a web worker
       // update state from webworker onmessage
       sortWorker.onmessage = ({ data: { playlist } }) => {
@@ -52,12 +56,16 @@ const Playlist = ({ random }) => {
       };
       sortWorker.postMessage({ playlist: videos, videoData: videoData });
     }
+    console.log(`index ${index}`);
   }, [videos, videoData /*sortWorker*/]);
 
   useEffect(() => {
+    console.log("index changed", index)
     if (!videos && !videoSubset) return;
+    console.log(" video at index", videos[index]);
     // first decide what local details to pass into VideoBar by using index
     const videoPlaying = videoSubset ? videoSubset[index]?.snippet : videos[index]?.snippet;
+    console.log("videoPlaying set video details", videoPlaying);
     // set videoDetails state
     setVideoDetails(videoPlaying);
     // then, fetch other details and play video in DB
@@ -96,11 +104,13 @@ const Playlist = ({ random }) => {
     if (random) {
       // select random index
     } else {
-      setIndex(index + 1);
+      console.log("video finished, index", index+1);
+      console.log("video at index", videos[index+1])
+      setIndex(parseInt(index) + 1);
     }
   }
   const videoSelected = (ndx) => {
-    setIndex(ndx);
+    setIndex(parseInt(ndx));
   }
   const searchHandler = (search) => {
     let res = calculateSearchResults(search);
