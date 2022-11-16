@@ -39,6 +39,10 @@ const handler = async (event) => {
         let result = await findOrCreateUpdateRecord(collection, id, updates);// will throw if fails
         return {
             statusCode: 200,
+            headers: {
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Credentials': true
+            },
             body: JSON.stringify(result), // this implies result is a json object
         }
     }
@@ -48,7 +52,14 @@ const handler = async (event) => {
         ${error.message}\n
         ${error.stack}`;
         console.log(err);
-        return { statusCode: 500, body: error.toString() }
+        return {
+            statusCode: 500,
+            headers: {
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Credentials': true
+            },
+            body: error.toString()
+        }
     }
 }
 

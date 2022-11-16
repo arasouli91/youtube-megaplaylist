@@ -5,6 +5,7 @@ import { Videos, VideoDetail2, Loader, VideoBar } from '.';
 import { youTubeFetch, calculateSearchResults } from '../utils';
 import { Navbar } from '.';
 let sortWorker = new Worker(new URL('../utils/sortWorker.js', import.meta.url));
+const root = process.env.REACT_APP_NETLIFY_ROOT ? process.env.REACT_APP_NETLIFY_ROOT : "";
 
 
 const Playlist = ({ random }) => {
@@ -16,7 +17,7 @@ const Playlist = ({ random }) => {
   const [videoSubset, setVideoSubset] = useState(null);
   const [listSorted, setListSorted] = useState(false);
   // this is asynchronously loaded after the playlist and is used for sorting playlist
-  const [videoData, setVideoData] = useState(null); 
+  const [videoData, setVideoData] = useState(null);
 
   // Initially fetch playlist 
   useEffect(() => {
@@ -38,14 +39,14 @@ const Playlist = ({ random }) => {
 
       // fetch video data
       const fetchVidData = async () => {
-        let data = await fetch("/.netlify/functions/videos").then(resp => resp.json());
+        let data = await fetch(root + "/.netlify/functions/videos").then(resp => resp.json());
         console.log("fetched videoData", data);
         setVideoData(data);
       };
       fetchVidData();
     }/////why don't put below block into fetchVidData above??..it works like this...
     // wait for videoData to come back from the fetch, then we end up back in useEffect
-    if (videoData && listSorted === false) {     
+    if (videoData && listSorted === false) {
       console.log("  in second block")
       // run a web worker
       // update state from webworker onmessage
@@ -71,11 +72,11 @@ const Playlist = ({ random }) => {
     // then, fetch other details and play video in DB
     const playVideo = async (videoPlaying) => {
       console.log("playVideo")
-      let videoData = await fetch(`/.netlify/functions/playVideo?id=${videoPlaying?.resourceId?.videoId}`)
+      let videoData = await fetch(root + `/.netlify/functions/playVideo?id=${videoPlaying?.resourceId?.videoId}`)
         .then(resp => resp.json());
       console.log("fetched videoDetails", videoData);
       // update vidoeDetails state again so that VideoBar rerenders
-      setVideoDetails(Object.assign(videoPlaying,videoData));
+      setVideoDetails(Object.assign(videoPlaying, videoData));
       //// ALL START/END TIME INFO ACTUALLY NEEDS TO COME INITIALLY if we want to actually apply to the video player
       // we want to take -1 so that we can avoid passing extra params to video player
       //// we can probably put all this in session storage
@@ -84,17 +85,17 @@ const Playlist = ({ random }) => {
       const end = VideoDetails.end > 0 ? (VideoDetails.end < VideoDetails.duration ? VideoDetails.end : -1) : -1;
       */
       const start = videoData.start > 0 ? videoData.start : 0;
-      const end = videoData.end > 0 
-      ? (videoData.end < videoData.duration ? videoData.end : videoData.duration) 
-      : videoData.duration;
+      const end = videoData.end > 0
+        ? (videoData.end < videoData.duration ? videoData.end : videoData.duration)
+        : videoData.duration;
       console.log(`start ${start}, end ${end}`);
       const halftime = Math.floor((end - start) / 2) * 1000; // half and convert to ms
       // set timeout to check if song is still playing after 50% of duration
       console.log(`halftime ${halftime}`);
       setTimeout(async () => {
-        console.log("in timeout callback halftime,",halftime);
+        console.log("in timeout callback halftime,", halftime);
         console.log(`videodetails._id ${videoData._id}`);
-        await fetch(`/.netlify/functions/checkVideoPlaying?id=${videoData._id}`)
+        await fetch(root + `/.netlify/functions/checkVideoPlaying?id=${videoData._id}`)
       }, halftime);
     };
     playVideo(videoPlaying);
@@ -104,8 +105,8 @@ const Playlist = ({ random }) => {
     if (random) {
       // select random index
     } else {
-      console.log("video finished, index", index+1);
-      console.log("video at index", videos[index+1])
+      console.log("video finished, index", index + 1);
+      console.log("video at index", videos[index + 1])
       setIndex(parseInt(index) + 1);
     }
   }

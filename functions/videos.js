@@ -26,7 +26,7 @@ const handler = async (event) => {
             // the client will use this dict to find the id of a video and then use the index
             // as a way to sort on the client side
             results.forEach((x, index) => {
-                if(x._id){
+                if (x._id) {
                     let videoId = x._id;
                     dict[videoId] = index;
                 }
@@ -35,6 +35,10 @@ const handler = async (event) => {
         }
         return {
             statusCode: 200,
+            headers: {
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Credentials': true
+            },
             body: JSON.stringify(dict),
         }
 
@@ -44,7 +48,14 @@ const handler = async (event) => {
         ${error.message}\n
         ${error.stack}`;
         console.log(err);
-        return { statusCode: 500, body: err }
+        return {
+            statusCode: 500,
+            headers: {
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Credentials': true
+            },
+            body: err
+        }
     }
 }
 /*

@@ -22,12 +22,12 @@ const handler = async (event) => {
 
         // check if this video is playing
         let videoPlayingResult = await collection.findOne({ _id: "videoPlaying" });
-        console.log("video playing result from DB",videoPlayingResult);
+        console.log("video playing result from DB", videoPlayingResult);
         console.log("id received from client", id);
         if (!videoPlayingResult) {
             throw new Error("wasn't able to check video playing");
         } else {
-            console.log(`videoPlayingResult.videoId === id?`,videoPlayingResult.videoId === id);
+            console.log(`videoPlayingResult.videoId === id?`, videoPlayingResult.videoId === id);
             if (videoPlayingResult.videoId === id) { // this video is playing
                 // increment the play count for this video
                 collection = database.collection("video");
@@ -40,6 +40,10 @@ const handler = async (event) => {
         }
         return {
             statusCode: 200,
+            headers: {
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Credentials': true
+            },
             body: JSON.stringify(resultStr),
         }
     }
@@ -49,7 +53,14 @@ const handler = async (event) => {
         ${error.message}\n
         ${error.stack}`;
         console.log(err);
-        return { statusCode: 500, body: error.toString() }
+        return {
+            statusCode: 500,
+            headers: {
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Credentials': true
+            },
+            body: error.toString()
+        }
     }
 }
 

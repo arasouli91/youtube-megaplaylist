@@ -22,7 +22,7 @@ const handler = async (event) => {
         const end = parseInt(event.queryStringParameters["end"]);
         const id = event.queryStringParameters["id"];
         console.log(`start: ${start}, end: ${end}, id: ${id}`);
-        if(start>=end) throw new Error("start >= end");
+        if (start >= end) throw new Error("start >= end");
         const updates = {
             start: start ? start : -1,
             end: end ? end : -1
@@ -32,6 +32,10 @@ const handler = async (event) => {
         const result = await findOrCreateUpdateRecord(collection, id, updates);// will throw if fails
         return {
             statusCode: 200,
+            headers: {
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Credentials': true
+            },
             body: JSON.stringify(result), // this implies result is a json object
         }
     }
@@ -41,7 +45,14 @@ const handler = async (event) => {
         ${error.message}\n
         ${error.stack}`;
         console.log(err);
-        return { statusCode: 500, body: error.toString() }
+        return {
+            statusCode: 500,
+            headers: {
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Credentials': true
+            },
+            body: error.toString()
+        }
     }
 }
 
@@ -66,7 +77,7 @@ const mergeIntoUpdateSet = (record, updatesObj) => {
 
     // for the keys of update object
     for (var i = 0; i < keys.length; ++i) {
-        if (keys[i] === "likes" || keys[i] === "plays") 
+        if (keys[i] === "likes" || keys[i] === "plays")
             updatesObj[keys[i]] = parseInt(updatesObj[keys[i]]) + parseInt(record[keys[i]]);
         // else obj1[keys[i]] = obj2[keys[i]]; // No! updateset doesn't need this
     }
@@ -74,7 +85,7 @@ const mergeIntoUpdateSet = (record, updatesObj) => {
 
 const findOrCreateUpdateRecord = async (collection, id, updateSet = null) => {
     console.log(`inside findOrCreateUpdateRecord ${updateSet}`);
-    
+
     console.log(`updates ${updateSet.start} and ${updateSet.end}`);
     let result = await collection.findOne({ _id: id });
     // if record DNE, fetch from yt api, create new record
