@@ -39,6 +39,7 @@ self.onmessage = (e) => {
     let playlist = e?.data?.playlist;
     if (!playlist) return;
     let videoDict = e?.data?.videoData;
+    let visited = {};
     if (videoDict) {
         console.log("videoDict was not null")
         console.log("videoDict lengtg", Object.entries(videoDict).length);
@@ -52,6 +53,8 @@ self.onmessage = (e) => {
         // push those with metrics to list2 and those without to list3
         for (let i = INITIAL_LEN; i < playlist.length; i++) {
             let id = playlist[i]?.snippet?.resourceId?.videoId;
+            if (visited[id]) continue;
+            visited[id] = true;
             if (videoDict[id]) {
                 console.log("videoDict[id]", videoDict[id]);
                 console.log(playlist[i])

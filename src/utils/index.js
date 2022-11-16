@@ -104,7 +104,7 @@ function checkLocalCache(res) {
   newPlaylist = newPlaylist.concat(cachedPlaylist);
 
   if (diff > GEN_SEARCH_DICT_THRESHOLD || !sessionStorage.getItem("searchDict")) {
-    buildSearchDictionary(newPlaylist);
+    buildSearchDictionary(newPlaylist); /////TODO: This needs to happen after we sort playlist
   }
 
   return newPlaylist; // return the cached + new songs
@@ -122,7 +122,7 @@ const savePlaylist = (playlist) => {
 ///////// WE WILL NEED TO CALL THIS AFTER SORTING THE LIST
 ///////// BCUZ THE DICTIONARY WILL USE INDICES
 ///////// if this is too inconvenient, then after sorting map names to indices
-const buildSearchDictionary = (playlist) => {
+export const buildSearchDictionary = (playlist) => {
   searchDictWorker.onmessage = ({ data: { dict } }) => {
     sessionStorage.setObj("searchDict", dict)
   };
