@@ -48,6 +48,7 @@ const Playlist = ({ random }) => {
     // wait for videoData to come back from the fetch, then we end up back in useEffect
     if (videoData && listSorted === false) {
       console.log("  in second block")
+      //////// Why are we sorting everytime? should we be saving sorted list to local storage?
       // run a web worker
       // update state from webworker onmessage
       sortWorker.onmessage = ({ data: { playlist } }) => {

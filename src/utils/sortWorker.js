@@ -28,6 +28,8 @@ necessarily deserve to be on the bottom
 bcuz some with metrics might have negative score
 */
 
+const INITIAL_LEN = 30;
+
 /* eslint-disable-next-line no-restricted-globals */
 self.onmessage = (e) => {
     ///////// WE ARE GOING TO WANT TO STORE VIDEO DATA IN SESSION STORAGE AFTER ALL
@@ -39,16 +41,20 @@ self.onmessage = (e) => {
     let videoDict = e?.data?.videoData;
     if (videoDict) {
         console.log("videoDict was not null")
+        console.log("videoDict lengtg", Object.entries(videoDict).length);
         let list1 = [], list2 = [], list3 = [];
 
-        // push first 40 songs
-        for (let i = 0; i < 40 && i < playlist.length; i++) {
+        // push first INITIAL_LEN songs
+        console.log("INITIAL_LEN", INITIAL_LEN)
+        for (let i = 0; i < INITIAL_LEN && i < playlist.length; i++) {
             list1.push(playlist[i]);
         }
         // push those with metrics to list2 and those without to list3
-        for (let i = 40; i < playlist.length; i++) {
+        for (let i = INITIAL_LEN; i < playlist.length; i++) {
             let id = playlist[i]?.snippet?.resourceId?.videoId;
             if (videoDict[id]) {
+                console.log("videoDict[id]", videoDict[id]);
+                console.log(playlist[i])
                 list2.push(playlist[i]);
             } else {
                 list3.push(playlist[i]);
@@ -57,12 +63,14 @@ self.onmessage = (e) => {
         const comp = (a, b) => {
             let aId = a?.snippet?.resourceId?.videoId;
             let bId = b?.snippet?.resourceId?.videoId;
-            let aNdx = videoDict[aId].index;
-            let bNdx = videoDict[bId].index;
-            return bNdx - aNdx;
+            let aNdx = videoDict[aId];
+            let bNdx = videoDict[bId];
+            return aNdx - bNdx;
         }
+        console.log("list2", list2);
         // sort list2 with custom comparator based on sorted index from DB
-        list2.sort(comp);
+        list2 = list2.sort(comp);
+        console.log("list2", list2);
         // concat lists
         playlist = list1.concat(list2).concat(list3);
     }
