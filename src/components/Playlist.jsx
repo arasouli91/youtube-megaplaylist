@@ -76,10 +76,6 @@ const Playlist = ({ random }) => {
     console.log(`index ${index}`);
   }, [videos, videoData /*sortWorker*/]);
 
-  ///////////////////////////////TODO: I TGINK ALL THIS NEEDS TO RUN INITIALLY
-  //////////THIS IS WHERE WE CALL PLAYVIDEO, SO INITIAL LOAD WE NEED TO DO IT
-  ////////// WE COULD FACTOR ALL THIS OUT AND THEN MOVE IT TO INITIAL USE EFFECT ALSO
-
   const playVideo = async (videoPlaying) => {
     console.log("playVideo")
     // first decide what local details to pass into VideoBar by using index
@@ -143,11 +139,13 @@ const Playlist = ({ random }) => {
     }
     let res = calculateSearchResults(search);
     res = res.map((ndx) => videos[ndx]);
+    setIndex(0);
     if (res.length > 0) {
-      setIndex(0);
       setVideoSubset(res);
+      playVideo(res[0].snippet);
     } else {
       setVideoSubset(null);
+      playVideo(videos[0].snippet);
     }
   }
 

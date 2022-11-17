@@ -8,7 +8,8 @@ const GET_NEW_LIST_THRESHOLD = 50; // needs to be 50 bcuz that's the most we ret
 /////const GEN_SEARCH_DICT_THRESHOLD = 0;
 /////if we dont always generate it then we can't search for songs that appear at top....
 
-const api_key = process.env.REACT_APP_YOUTUBE_API_KEY1;
+let firstTry = true;
+let api_key = process.env.REACT_APP_YOUTUBE_API_KEY1;
 const youTubeFetchInner = async (playlist_id, page_token) => {
   try {
     const base_url = 'https://www.googleapis.com/youtube/v3';
@@ -16,21 +17,20 @@ const youTubeFetchInner = async (playlist_id, page_token) => {
       method: 'GET',
       mode: 'cors',
     };
-    let url;
 
-    /////TODO: We need to be able to switch yt api keys if one fails, factor it out
-    if (page_token) {
-      url = `${base_url}/playlistItems?&part=snippet&playlistId=${playlist_id}&pageToken=${page_token}&maxResults=50&key=${api_key}`;
-    }
-    else {
-      url = `${base_url}/playlistItems?&part=snippet&playlistId=${playlist_id}&maxResults=50&key=${api_key}`;
+    const genUrl = (apikey) => {
+      if (page_token)
+        return `${base_url}/playlistItems?&part=snippet&playlistId=${playlist_id}&pageToken=${page_token}&maxResults=50&key=${apikey}`;
+      return `${base_url}/playlistItems?&part=snippet&playlistId=${playlist_id}&maxResults=50&key=${apikey}`;
     }
 
-    const result = await fetch(url, config);
-    if (result.status !== 200) {
-      return Promise.reject(result.error);
+    let result = await fetch(genUrl(api_key), config).then(res => res.json()).catch(e => "FAILED");
+    if (firstTry && (!result || result === "FAILED")) { // switch other apikey for subsequent requests
+      api_key = process.env.REACT_APP_YOUTUBE_API_KEY2;
+      result = await fetch(genUrl(api_key), config).then(res => res.json());
+      firstTry = false;
     }
-    return await result.json();
+    return result;
   }
   catch (e) {
     throw new Error(e)

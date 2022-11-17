@@ -79,6 +79,7 @@ const compare = (a, b) => {
 };
 
 //// We copied and pasted these to all the functions bcuz importing it doesn't seem to work
+///TODO: try to factor this out again
 
 const mergeIntoRecord = (record, updatesObj) => {
     let keys = Object.keys(updatesObj); // keys of updates object
@@ -110,11 +111,13 @@ const findOrCreateUpdateRecord = async (collection, id, updateSet = null) => {
     let result = await collection.findOne({ _id: id });
     // if record DNE, fetch from yt api, create new record
     if (!result) {
-        /////TODO: We need to be able to switch yt api keys if one fails, factor it out
-        let uri = `https://youtube.googleapis.com/youtube/v3/videos?part=contentDetails`
-            + `&id=${id}&key=${process.env.REACT_APP_YOUTUBE_API_KEY1}`;
+        const uri1 = `https://youtube.googleapis.com/youtube/v3/videos?part=contentDetails`;
+        let uri = uri1 + `&id=${id}&key=${process.env.REACT_APP_YOUTUBE_API_KEY1}`;
         let ytVideo = await fetch(uri).then(res => res.json());
-
+        if (!ytVideo || ytVideo === "FAILED") {
+            let uri = uri1 + `&id=${id}&key=${process.env.REACT_APP_YOUTUBE_API_KEY2}`;
+            ytVideo = await fetch(uri).then(res => res.json());
+        }
 
         //"duration": "PT8M5S", can be single or double digit
         let durationStr = ytVideo.items[0].contentDetails.duration;

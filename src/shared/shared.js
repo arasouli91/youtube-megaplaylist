@@ -8,10 +8,13 @@ export const findOrCreateUpdateRecord = async (collection, id, props = null) => 
     let result = await collection.findOne({ _id: id });
     // if record DNE, fetch from yt api, create new record
     if (!result) {
-        /////TODO: We need to be able to switch yt api keys if one fails, factor it out
-        let uri = `https://youtube.googleapis.com/youtube/v3/videos?part=contentDetails`
-            + `&id=${id}&key=${process.env.REACT_APP_YOUTUBE_API_KEY1}`;
-        const ytVideo = await (await fetch(uri)).json();
+        const uri1 = `https://youtube.googleapis.com/youtube/v3/videos?part=contentDetails`;
+        let uri = uri1 + `&id=${id}&key=${process.env.REACT_APP_YOUTUBE_API_KEY1}`;
+        let ytVideo = await fetch(uri).then(res => res.json()).catch(e => "FAILED");
+        if (!ytVideo || ytVideo === "FAILED") {
+            let uri = uri1 + `&id=${id}&key=${process.env.REACT_APP_YOUTUBE_API_KEY2}`;
+            ytVideo = await fetch(uri).then(res => res.json());
+        }
 
         //"duration": "PT8M5S", can be single or double digit
         let durationStr = ytVideo.items[0].contentDetails.duration;
