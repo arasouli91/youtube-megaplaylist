@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Stack, Box } from '@mui/material';
 
-import { Videos, VideoDetail2, Loader, VideoBar } from '.';
+import { Videos, VideoDetail2, Loader, VideoBar, SideBar } from '.';
 import { youTubeFetch, calculateSearchResults, savePlaylist, buildSearchDictionary } from '../utils';
 import { Navbar } from '.';
 let sortWorker = new Worker(new URL('../utils/sortWorker.js', import.meta.url));
@@ -149,6 +149,12 @@ const Playlist = ({ random }) => {
     }
   }
 
+  const addLikes = (likes) => {
+    VideoDetails.likes += likes;
+    setVideoDetails(VideoDetails);
+    setTriggerReload(triggerReload ? false : true);
+  }
+
   return (
     (videos ?
       <>
@@ -162,11 +168,14 @@ const Playlist = ({ random }) => {
             videoFinished={videoFinished}
           />
           <VideoBar video={VideoDetails} setChannel={searchHandler} triggerReload={triggerReload} />
-          <Box px={1} py={{ md: 1, xs: 5 }}>
+          <Box className='bottom-half' px={1} py={{ md: 1, xs: 5 }}>
+            <div className='left-side-of-playlist'>
+            </div>
             <Videos
               videos={videoSubset ? videoSubset : videos}
               curNdx={index} videoSelected={videoSelected}
             />
+            <SideBar video={VideoDetails} addLikes={addLikes} />
           </Box>
           {/*<Videos videos={videos} />*/}
         </Stack>

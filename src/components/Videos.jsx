@@ -91,23 +91,25 @@ const Videos = ({ videos, curNdx, videoSelected }) => {
   return (<>
     {videos ? (
       <>
-        <Box
-          sx={{ width: '100%', height: { listHeight }, maxWidth: 820, paddingTop: '0' }}
-          className={"list"}
-        >
-          <FixedSizeList
-            ref={listRef}
-            height={listHeight}
-            width={listWidth}
-            itemSize={90}
-            itemCount={videos.length}
-            overscanCount={25}
+        <div className="list-container">
+          <Box
+            sx={{ width: '100%', height: { listHeight }, maxWidth: 820, paddingTop: '0' }}
+            className={"list"}
           >
-            {renderRow}
-          </FixedSizeList>
-        </Box>
-        <div className="flex-center mt-2">
-          <Button onClick={(e) => listRef.current.scrollToItem(curNdx)} className="btn1" variant="dark">SCROLL TO CURRENT SONG</Button>
+            <FixedSizeList
+              ref={listRef}
+              height={listHeight}
+              width={listWidth}
+              itemSize={90}
+              itemCount={videos.length}
+              overscanCount={25}
+            >
+              {renderRow}
+            </FixedSizeList>
+          </Box>
+          <div className="flex-center mt-2">
+            <Button onClick={(e) => listRef.current.scrollToItem(curNdx)} className="btn1" variant="dark">SCROLL TO CURRENT SONG</Button>
+          </div>
         </div>
       </>
     ) : (

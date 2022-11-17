@@ -106,7 +106,7 @@ const VideoBar = ({ video, setChannel }) => {
                   className="button"
                 />
                 <ThumbDownAltOutlinedIcon
-                  onClick={(e) => handleLikes(-1)}
+                  onClick={(e) => handleLikes(-2)}
                   sx={{ width: '34px', height: '34px' }}
                   className="button"
                 />
@@ -135,13 +135,5 @@ const VideoBar = ({ video, setChannel }) => {
     </>
   );
 };
-/*
-Do we want a side bar and a grid view?
-Sounds good.
- 
-We will want to change thumbnails to be more like youtube playlist
- 
- 
-*/
 
 export default VideoBar;
