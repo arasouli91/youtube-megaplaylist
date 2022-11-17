@@ -11,11 +11,11 @@ import {
 } from '@mui/material';
 import Loader from './Loader';
 
-
+const HEIGHT_OFFSET = 79 + 206 + 90 + 80;
 const Videos = ({ videos, curNdx, videoSelected }) => {
   const listRef = React.createRef();
   const [listWidth, setListWidth] = useState(660);
-
+  const [listHeight, setListHeight] = useState(document.documentElement.clientHeight - HEIGHT_OFFSET);
   useEffect(() => {
     listRef?.current?.scrollToItem(curNdx);
     setTimeout(() => {
@@ -25,18 +25,23 @@ const Videos = ({ videos, curNdx, videoSelected }) => {
 
   if (!videos) return <div>Loading...</div>
 
-  function displayWindowSize() {
+  function windowSize() {
     document.querySelector(".main-stk div:nth-child(3)")?.classList.add("videos-root");
     if (document.documentElement.clientWidth < 680) {
       setListWidth(document.documentElement.clientWidth - 20);
+      if (document.documentElement.clientWidth < 340)
+        setListHeight(document.documentElement.clientHeight - HEIGHT_OFFSET - 250);
+      else
+        setListHeight(document.documentElement.clientHeight - HEIGHT_OFFSET - 80);
     }
     else {
       setListWidth(660);
+      setListHeight(document.documentElement.clientHeight - HEIGHT_OFFSET);
     }
   }
 
   // Attaching the event listener function to window's resize event
-  window.addEventListener("resize", displayWindowSize);
+  window.addEventListener("resize", windowSize);
 
   function renderRow(props) {
     const { index, style } = props;
@@ -87,12 +92,12 @@ const Videos = ({ videos, curNdx, videoSelected }) => {
     {videos ? (
       <>
         <Box
-          sx={{ width: '100%', height: 800, maxWidth: 820, paddingTop: '0' }}
+          sx={{ width: '100%', height: { listHeight }, maxWidth: 820, paddingTop: '0' }}
           className={"list"}
         >
           <FixedSizeList
             ref={listRef}
-            height={800}
+            height={listHeight}
             width={listWidth}
             itemSize={90}
             itemCount={videos.length}

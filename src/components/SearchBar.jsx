@@ -8,9 +8,7 @@ const SearchBar = ({ searchHandler }) => {
 
   const onhandleSubmit = (e) => {
     e.preventDefault();
-    if (searchTerm) {
-      searchHandler(searchTerm);
-    }
+    searchHandler(searchTerm);
   };
 
   return (

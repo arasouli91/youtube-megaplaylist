@@ -135,11 +135,17 @@ const Playlist = ({ random }) => {
     setIndex(parseInt(ndx));
   }
   const searchHandler = (search) => {
+    if (!search || search === "") {
+      setVideoSubset(null);
+      return;
+    }
     let res = calculateSearchResults(search);
     res = res.map((ndx) => videos[ndx]);
     if (res.length > 0) {
       setIndex(0);
       setVideoSubset(res);
+    } else {
+      setVideoSubset(null);
     }
   }
 

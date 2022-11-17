@@ -202,6 +202,7 @@ a {
   padding-bottom: 4px;
 }
 
+/*
 @media screen and (max-width:800px) {
   .category-btn {
     height: 35px !important;
@@ -212,7 +213,7 @@ a {
     display: none !important;
   }
 }
-
+*/
 @media screen and (max-width: 600px) {
   .scroll-horizontal {
     overflow: auto !important;
