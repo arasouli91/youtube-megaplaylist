@@ -17,9 +17,9 @@ const Videos = ({ videos, curNdx, videoSelected }) => {
   const [listWidth, setListWidth] = useState(660);
 
   useEffect(() => {
-    listRef.current.scrollToItem(curNdx);
+    listRef?.current?.scrollToItem(curNdx);
     setTimeout(() => {
-      listRef.current.scrollToItem(curNdx);
+      listRef?.current?.scrollToItem(curNdx);
     }, 400);
   }, [curNdx, listRef]);
 

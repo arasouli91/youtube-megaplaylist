@@ -3,8 +3,10 @@ import axios from 'axios';
 let worker = new Worker(new URL('./worker.js', import.meta.url));
 let searchDictWorker = new Worker(new URL('./searchDictWorker.js', import.meta.url));
 
+const SORT_LIST_THRESHOLD = 30; // this also exists in sortWorker as INITIAL_LEN
 const GET_NEW_LIST_THRESHOLD = 50; // needs to be 50 bcuz that's the most we return from one api call
-const GEN_SEARCH_DICT_THRESHOLD = 1; ///////////NOTE: THIS SHOULD BE 8
+/////const GEN_SEARCH_DICT_THRESHOLD = 0;
+/////if we dont always generate it then we can't search for songs that appear at top....
 
 const api_key = process.env.REACT_APP_YOUTUBE_API_KEY1;
 const youTubeFetchInner = async (playlist_id, page_token) => {
@@ -43,21 +45,21 @@ export const youTubeFetch = async (playlist_id) => {
   // keep getting next page token and concatenating results
   try {
     let pagetoken = null;
-    let res = [];
+    let resObj = { res: [], shouldSort: true };
     let i = 0;
     while (i < 100) { // get up to 5K songs
       let partialRes = await youTubeFetchInner(playlist_id, pagetoken);
       // determine whether to take cached or get whole playlist from remote
       if (i === 0) {
-        res = checkLocalCache(partialRes);
-        if (res.length > 0) {
-          console.log("return cached list")
+        resObj = checkLocalCache(partialRes);
+        if (resObj.res.length > 0) {
+          console.log("return cached list,resObj", resObj)
           // either take local cache or take local cache with added videos diff
-          return res;
+          return resObj;
         }
       }
       if (partialRes?.items) {
-        res.push(...partialRes?.items);
+        resObj.res.push(...partialRes?.items);
       }
       pagetoken = partialRes?.nextPageToken;
       if (!pagetoken) {
@@ -66,32 +68,28 @@ export const youTubeFetch = async (playlist_id) => {
       ++i;
     }
 
-    // update prev length, after caching playlist, we want to move forward comparing against that last cached length
-    localStorage.setItem("prevLength", res.length);
-
-    // let worker deal with storing the playlist to local storage
-    savePlaylist(res); // we got all from remote, now cache it
-
-    buildSearchDictionary(res);
-
     // returned whole remote playlist
-    console.log("return remote list")
-    return res;
+    console.log("return remote list, resObj", resObj)
+    // update prev len, going forward we compare against last time we fetched everything
+    localStorage.setItem("prevLength", resObj.res.length);
+    return resObj
   }
   catch (e) {
     throw new Error(e)
   }
 }
+// determine whether to take cached or get whole playlist, and determine whether not to sort
 function checkLocalCache(res) {
   /// if local cache ends up with more than remote, then we might want to replace local cache bcuz it might be invalid
 
   let previousLength = localStorage.getItem("prevLength");
+  console.log("previousLength", previousLength)
   let remotePlaylist = res?.items;
   let remotePlaylistLength = res?.pageInfo?.totalResults;
   let diff = remotePlaylistLength - previousLength;
   // if diff between prev cached length > threshold
   if (diff > GET_NEW_LIST_THRESHOLD) {
-    return []; // go ahead and get entire remote, which will become the new cached
+    return { res: [], shouldSort: true }; // go ahead and get entire remote, which will become the new cached
   }
 
   // add to cached playlist
@@ -103,25 +101,18 @@ function checkLocalCache(res) {
   }
   newPlaylist = newPlaylist.concat(cachedPlaylist);
 
-  if (diff > GEN_SEARCH_DICT_THRESHOLD || !sessionStorage.getItem("searchDict")) {
-    buildSearchDictionary(newPlaylist); /////TODO: This needs to happen after we sort playlist
-  }
-
-  return newPlaylist; // return the cached + new songs
+  // return the cached + new songs. We should sort matching threshold of sortWorker otherwise it will discard some songs
+  return { res: newPlaylist, shouldSort: diff > SORT_LIST_THRESHOLD };
 }
 
-// slim down playlist object and then cache it   ////later need to sort it also
-const savePlaylist = (playlist) => {
+// slim down playlist object and then cache it 
+export const savePlaylist = (playlist) => {
   worker.onmessage = ({ data: { playlist } }) => {
     localStorage.setObj("playlist", playlist)
   };
   worker.postMessage({ playlist: playlist });
 }
 
-/////////TODO: AFTER WE IMPLEMENT SORTING,
-///////// WE WILL NEED TO CALL THIS AFTER SORTING THE LIST
-///////// BCUZ THE DICTIONARY WILL USE INDICES
-///////// if this is too inconvenient, then after sorting map names to indices
 export const buildSearchDictionary = (playlist) => {
   searchDictWorker.onmessage = ({ data: { dict } }) => {
     sessionStorage.setObj("searchDict", dict)
@@ -171,6 +162,7 @@ Storage.prototype.setObj = function (key, obj) {
 Storage.prototype.getObj = function (key) {
   return JSON.parse(this.getItem(key))
 }
+
 
 
 

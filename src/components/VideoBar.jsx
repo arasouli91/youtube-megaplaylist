@@ -9,6 +9,7 @@ import SkipNextIcon from '@mui/icons-material/SkipNext';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import QueueIcon from '@mui/icons-material/Queue';
 import { Loader } from '.';
+import { useEffect, useState } from 'react';
 const root = process.env.REACT_APP_NETLIFY_ROOT ? process.env.REACT_APP_NETLIFY_ROOT : "";
 
 // We sohuld only know about current video?
@@ -19,8 +20,17 @@ const root = process.env.REACT_APP_NETLIFY_ROOT ? process.env.REACT_APP_NETLIFY_
 
 const VideoBar = ({ video, setChannel }) => {
   if (!video) <Loader />;
+  const [localLikes, setLocalLikes] = useState(video?.likes);
+
+  useEffect(() => {
+    console.log("video changed", video);
+    setLocalLikes(video?.likes)
+  }, [video?.likes]);
+
 
   const handleLikes = async (likes) => {
+    /////TODO: we can't guarantee that video object has ._id
+    setLocalLikes(localLikes + likes);
     await fetch(root + `/.netlify/functions/like?id=${video._id}&likes=${likes}`)
   }
   const skipSong = async () => {
@@ -67,36 +77,37 @@ const VideoBar = ({ video, setChannel }) => {
               <div className='vid-bar-top'>
                 <QueueIcon
                   onClick={(e) => pushToQueue()}
-                  sx={{ mr: '10px' }}
+                  sx={{ mr: '10px', width: '34px', height: '34px' }}
                   className="button"
                 />
                 <StartIcon
                   onClick={(e) => setStart()}
-                  sx={{ mr: '10px' }}
+                  sx={{ mr: '10px', width: '34px', height: '34px' }}
                   className="button"
                 />
                 <KeyboardTabOutlinedIcon
                   onClick={(e) => setEnd()}
-                  sx={{ mr: '10px' }}
+                  sx={{ mr: '10px', width: '34px', height: '34px' }}
                   className="button"
                 />
                 <SkipNextIcon
                   onClick={(e) => skipSong()}
-                  sx={{ mr: '10px' }}
+                  sx={{ mr: '10px', width: '34px', height: '34px' }}
                   className="button"
                 />
                 <RecommendOutlinedIcon
                   onClick={(e) => handleLikes(6)}
-                  sx={{ mr: '10px' }}
+                  sx={{ mr: '10px', width: '34px', height: '34px' }}
                   className="button"
                 />
                 <ThumbUpAltOutlinedIcon
                   onClick={(e) => handleLikes(1)}
-                  sx={{ mr: '8px' }}
+                  sx={{ mr: '8px', width: '34px', height: '34px' }}
                   className="button"
                 />
                 <ThumbDownAltOutlinedIcon
                   onClick={(e) => handleLikes(-1)}
+                  sx={{ width: '34px', height: '34px' }}
                   className="button"
                 />
               </div>
@@ -112,8 +123,9 @@ const VideoBar = ({ video, setChannel }) => {
                 </Typography>
                 <span>
                   {parseInt(
-                    video?.likes
-                  ).toLocaleString('en-US')}
+                    localLikes
+                  ).toLocaleString('en-US')}{' '}
+                  likes
                 </span>
               </div>
             </div>

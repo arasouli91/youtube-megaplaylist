@@ -40,24 +40,25 @@ self.onmessage = (e) => {
     if (!playlist) return;
     let videoDict = e?.data?.videoData;
     let visited = {};
+    ///////NOTE: we could get rid of dupe counting
+    let dupes = 0;
     if (videoDict) {
-        console.log("videoDict was not null")
-        console.log("videoDict lengtg", Object.entries(videoDict).length);
         let list1 = [], list2 = [], list3 = [];
 
-        // push first INITIAL_LEN songs
-        console.log("INITIAL_LEN", INITIAL_LEN)
+        // push first INITIAL_LEN songs 
         for (let i = 0; i < INITIAL_LEN && i < playlist.length; i++) {
             list1.push(playlist[i]);
         }
         // push those with metrics to list2 and those without to list3
         for (let i = INITIAL_LEN; i < playlist.length; i++) {
             let id = playlist[i]?.snippet?.resourceId?.videoId;
-            if (visited[id]) continue;
+            // exclude dupes
+            if (visited[id]) {
+                ++dupes;
+                continue;
+            }
             visited[id] = true;
             if (videoDict[id]) {
-                console.log("videoDict[id]", videoDict[id]);
-                console.log(playlist[i])
                 list2.push(playlist[i]);
             } else {
                 list3.push(playlist[i]);
@@ -70,10 +71,8 @@ self.onmessage = (e) => {
             let bNdx = videoDict[bId];
             return aNdx - bNdx;
         }
-        console.log("list2", list2);
         // sort list2 with custom comparator based on sorted index from DB
         list2 = list2.sort(comp);
-        console.log("list2", list2);
         // concat lists
         playlist = list1.concat(list2).concat(list3);
     }
@@ -81,5 +80,6 @@ self.onmessage = (e) => {
     /* eslint-disable-next-line no-restricted-globals */
     self.postMessage({
         playlist: playlist,
+        dupes: dupes,
     });
 }
