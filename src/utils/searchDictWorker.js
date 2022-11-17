@@ -4,6 +4,7 @@ self.onmessage = (e) => {
     let playlist = e?.data?.playlist;
     if (!playlist) return;
 
+    console.log("searchDictWorker: playlist: " + playlist)
     // map each word in each title to a list of indices
     let dict = {};
     playlist.forEach((x, i) => {

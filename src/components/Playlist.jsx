@@ -63,7 +63,7 @@ const Playlist = ({ random }) => {
           console.log("   set and cache playlist after sort", playlist)
           savePlaylist(playlist);
           console.log("  build search dictionary")
-          buildSearchDictionary(videos);
+          buildSearchDictionary(playlist);
         };
         sortWorker.postMessage({ playlist: videos, videoData: videoData });
         ///// save to local storage
