@@ -8,10 +8,11 @@ let sortWorker = new Worker(new URL('../utils/sortWorker.js', import.meta.url));
 const root = process.env.REACT_APP_NETLIFY_ROOT ? process.env.REACT_APP_NETLIFY_ROOT : "";
 
 
-const Playlist = ({ random }) => {
+const Playlist = () => {
   // id will either be incremented or random selected when a video finishes
   // or it will be chosen from list
   const [index, setIndex] = useState(0);
+  const [random, setRandom] = useState(false);
   const [videos, setVideos] = useState(null);
   const [VideoDetails, setVideoDetails] = useState(null);
   const [videoSubset, setVideoSubset] = useState(null);
@@ -122,7 +123,13 @@ const Playlist = ({ random }) => {
 
   const videoFinished = () => {
     if (random) {
-      // select random index
+      //////prevent same index twice?
+      const mod = videoSubset ? videoSubset.length : videos.length;
+      let randomNdx = (Math.random() * 100000) % mod;
+      console.log("video finished, index", index + 1);
+      console.log(parseInt(randomNdx))
+      console.log("video at index", videos[parseInt(randomNdx)])
+      setIndex(parseInt(randomNdx));
     } else {
       console.log("video finished, index", index + 1);
       console.log("video at index", videos[index + 1])
@@ -154,11 +161,15 @@ const Playlist = ({ random }) => {
     setVideoDetails(VideoDetails);
     setTriggerReload(triggerReload ? false : true);
   }
+  const randomChanged = () => {
+    console.log("set random", !random)
+    setRandom(!random);
+  }
 
   return (
     (videos ?
       <>
-        <Navbar searchHandler={searchHandler} />
+        <Navbar searchHandler={searchHandler} setRandom={randomChanged} random={random}/>
         <Stack
           height={2000}
           direction={"column"}
@@ -167,7 +178,7 @@ const Playlist = ({ random }) => {
             video={videoSubset ? videoSubset[index].snippet : videos[index].snippet}
             videoFinished={videoFinished}
           />
-          <VideoBar video={VideoDetails} setChannel={searchHandler} triggerReload={triggerReload} />
+          <VideoBar video={VideoDetails} setChannel={searchHandler} triggerReload={triggerReload} skip={videoFinished} />
           <Box className='bottom-half' px={1} py={{ md: 1, xs: 5 }}>
             <div className='left-side-of-playlist'>
             </div>

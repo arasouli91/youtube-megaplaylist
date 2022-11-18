@@ -10,6 +10,7 @@ const GET_NEW_LIST_THRESHOLD = 50; // needs to be 50 bcuz that's the most we ret
 
 let firstTry = true;
 let api_key = process.env.REACT_APP_YOUTUBE_API_KEY1;
+let api_key2 = process.env.REACT_APP_YOUTUBE_API_KEY2;
 const youTubeFetchInner = async (playlist_id, page_token) => {
   try {
     const base_url = 'https://www.googleapis.com/youtube/v3';
@@ -26,7 +27,7 @@ const youTubeFetchInner = async (playlist_id, page_token) => {
 
     let result = await fetch(genUrl(api_key), config).then(res => res.json()).catch(e => "FAILED");
     if (firstTry && (!result || result === "FAILED")) { // switch other apikey for subsequent requests
-      api_key = process.env.REACT_APP_YOUTUBE_API_KEY2;
+      api_key = api_key2;
       result = await fetch(genUrl(api_key), config).then(res => res.json());
       firstTry = false;
     }

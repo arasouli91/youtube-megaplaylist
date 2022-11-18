@@ -18,7 +18,7 @@ const root = process.env.REACT_APP_NETLIFY_ROOT ? process.env.REACT_APP_NETLIFY_
 // but if we are managing index, the parent will want to know as well
 // so let us just tell the parent everytime a video finishes
 
-const VideoBar = ({ video, setChannel }) => {
+const VideoBar = ({ video, setChannel, skip }) => {
   if (!video) <Loader />;
   const [localLikes, setLocalLikes] = useState(video?.likes);
 
@@ -33,13 +33,10 @@ const VideoBar = ({ video, setChannel }) => {
     setLocalLikes(localLikes + likes);
     await fetch(root + `/.netlify/functions/like?id=${video._id}&likes=${likes}`)
   }
-  const skipSong = async () => {
-    //////// we should call video selected with next index
-  }
   const setEnd = async (likes) => {
     const end = -1; // idk how to get current time
     await fetch(root + `/.netlify/functions/setStartEnd?id=${video._id}&end=${end}`)
-    skipSong();
+    skip();
   }
   const setStart = async () => {
     const start = -1; // idk how to get current time
@@ -91,7 +88,7 @@ const VideoBar = ({ video, setChannel }) => {
                   className="button"
                 />
                 <SkipNextIcon
-                  onClick={(e) => skipSong()}
+                  onClick={(e) => skip()}
                   sx={{ mr: '10px', width: '34px', height: '34px' }}
                   className="button"
                 />
