@@ -4,9 +4,10 @@ import { Stack, Box } from '@mui/material';
 import { Videos, VideoDetail2, Loader, VideoBar, SideBar } from '.';
 import { youTubeFetch, calculateSearchResults, savePlaylist, buildSearchDictionary } from '../utils';
 import { Navbar } from '.';
+
+let channelsWorker = new Worker(new URL('../utils/channelsWorker.js', import.meta.url));
 let sortWorker = new Worker(new URL('../utils/sortWorker.js', import.meta.url));
 const root = process.env.REACT_APP_NETLIFY_ROOT ? process.env.REACT_APP_NETLIFY_ROOT : "";
-
 
 const Playlist = () => {
   // id will either be incremented or random selected when a video finishes
@@ -21,6 +22,7 @@ const Playlist = () => {
   // this is asynchronously loaded after the playlist and is used for sorting playlist
   const [videoData, setVideoData] = useState(null);
   const [triggerReload, setTriggerReload] = useState(null);
+  const [channelThumbs, setChannelThumbs] = useState(null);
 
   // Initially fetch playlist 
   useEffect(() => {
@@ -31,6 +33,7 @@ const Playlist = () => {
       setVideos(resObj.res)
       setShouldSort(resObj.shouldSort)
       playVideo(resObj.res[0].snippet)
+      setChannelThumbs({}); // this will let fetch channel thumbs happen later, first we finish up here
       console.log(resObj);
     };
     fetchVids();
@@ -121,6 +124,25 @@ const Playlist = () => {
     playVideo(videoPlaying);
   }, [index])
 
+  // use this to fetch channelThumbs, it will be initiated by setting channelThumbs to {}
+  useEffect(() => {
+    if (!channelThumbs) return;
+    console.log("channelThumbs", channelThumbs);
+    // first check session
+    const dict = sessionStorage.getObj("channelThumbs");
+    if (!dict) {
+      channelsWorker.onmessage = ({ data: { dict } }) => {
+        sessionStorage.setObj("channelThumbs", dict)
+        setChannelThumbs(dict);
+      };
+      channelsWorker.postMessage({
+        playlist: videos,
+        apiKeys: [process.env.REACT_APP_YOUTUBE_API_KEY1, process.env.REACT_APP_YOUTUBE_API_KEY2]
+      });
+    }
+  }, [channelThumbs]);
+
+
   const videoFinished = () => {
     if (random) {
       //////prevent same index twice?
@@ -169,7 +191,7 @@ const Playlist = () => {
   return (
     (videos ?
       <>
-        <Navbar searchHandler={searchHandler} setRandom={randomChanged} random={random}/>
+        <Navbar searchHandler={searchHandler} setRandom={randomChanged} random={random} />
         <Stack
           height={2000}
           direction={"column"}

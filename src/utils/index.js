@@ -147,7 +147,6 @@ export const calculateSearchResults = (term) => {
 }
 
 
-
 /////TODO:
 export const reportDeletedVideos = () => {
   // basically do the same type of fetching above
@@ -161,11 +160,12 @@ Storage.prototype.setObj = function (key, obj) {
   return this.setItem(key, JSON.stringify(obj))
 }
 Storage.prototype.getObj = function (key) {
-  return JSON.parse(this.getItem(key))
+  let item = this.getItem(key);
+  console.log(item)
+  if (item !== undefined)
+    return JSON.parse(item);
+  return null;
 }
-
-
-
 
 export const BASE_URL = 'https://youtube-v31.p.rapidapi.com';
 export const options = {

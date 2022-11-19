@@ -132,3 +132,85 @@ looks like you will need a vpn to watch some of your cdramas
         "resultsPerPage": 1
     }
 }
+// https://youtube.googleapis.com/youtube/v3/channels?part=snippet&id=${channelId}&key=${apikey}`
+
+// GET https://youtube.googleapis.com/youtube/v3/channels?part=snippet%2CcontentDetails%2Cstatistics&id=UC_x5XG1OV2P6uZZ5FSM9Ttw&key=[YOUR_API_KEY]
+
+// request two ids:
+{
+    "kind": "youtube#channelListResponse",
+    "etag": "V-kZc0Vnlks0dUfUSV4iyaQVxFM",
+    "pageInfo": {
+        "totalResults": 2,
+        "resultsPerPage": 5
+    },
+    "items": [
+        {
+            "kind": "youtube#channel",
+            "etag": "Cxi25U626ZmPs7h8MsS4D8GzfV8",
+            "id": "UC_x5XG1OV2P6uZZ5FSM9Ttw",
+            "snippet": {
+                "title": "Google Developers",
+                "description": "The Google Developers channel features talks from events, educational series, best practices, tips, and the latest updates across our products and platforms.\n\nSubscribe to Google Developers → https://goo.gle/developers\n",
+                "customUrl": "@googledevelopers",
+                "publishedAt": "2007-08-23T00:34:43Z",
+                "thumbnails": {
+                    "default": {
+                        "url": "https://yt3.ggpht.com/ytc/AMLnZu-oDvWEJ-WfN9bgxQB2YAlnjC2uqN_c7JQZvX9Ikfg=s88-c-k-c0x00ffffff-no-rj",
+                        "width": 88,
+                        "height": 88
+                    },
+                    "medium": {
+                        "url": "https://yt3.ggpht.com/ytc/AMLnZu-oDvWEJ-WfN9bgxQB2YAlnjC2uqN_c7JQZvX9Ikfg=s240-c-k-c0x00ffffff-no-rj",
+                        "width": 240,
+                        "height": 240
+                    },
+                    "high": {
+                        "url": "https://yt3.ggpht.com/ytc/AMLnZu-oDvWEJ-WfN9bgxQB2YAlnjC2uqN_c7JQZvX9Ikfg=s800-c-k-c0x00ffffff-no-rj",
+                        "width": 800,
+                        "height": 800
+                    }
+                },
+                "localized": {
+                    "title": "Google Developers",
+                    "description": "The Google Developers channel features talks from events, educational series, best practices, tips, and the latest updates across our products and platforms.\n\nSubscribe to Google Developers → https://goo.gle/developers\n"
+                },
+                "country": "US"
+            }
+        },
+        {
+            "kind": "youtube#channel",
+            "etag": "Fe5od5wBBpX3if9uhla0JP-AegQ",
+            "id": "UCQatgKoA7lylp_UzvsLCgcw",
+            "snippet": {
+                "title": "腾讯视频",
+                "description": "欢迎订阅腾讯视频，点击这里加入会员抢先看《外星女生柴小七2》《飞狐外传》《恋爱的夏天》等热播剧集！\n我们会为大家提供精彩热门的影视综艺内容\n开通会员功能，享受热门剧集抢先看！\nClick here to watch [My Girlfriend is an Alien S2]  [Side Story of Fox Volant] [Discovery of Romance] in advance.\nThank you for subscribing “Tencent Video” YouTube Channel~\n",
+                "customUrl": "@tencentvideoofficial",
+                "publishedAt": "2016-02-01T03:22:12Z",
+                "thumbnails": {
+                    "default": {
+                        "url": "https://yt3.ggpht.com/icuUrDcjN_JhYLg4zmFLFp41z41BqNlEcr62KO29ay7QCMkPZIRALtUZZVBWvEa3IrMn8oRHrw=s88-c-k-c0x00ffffff-no-rj",
+                        "width": 88,
+                        "height": 88
+                    },
+                    "medium": {
+                        "url": "https://yt3.ggpht.com/icuUrDcjN_JhYLg4zmFLFp41z41BqNlEcr62KO29ay7QCMkPZIRALtUZZVBWvEa3IrMn8oRHrw=s240-c-k-c0x00ffffff-no-rj",
+                        "width": 240,
+                        "height": 240
+                    },
+                    "high": {
+                        "url": "https://yt3.ggpht.com/icuUrDcjN_JhYLg4zmFLFp41z41BqNlEcr62KO29ay7QCMkPZIRALtUZZVBWvEa3IrMn8oRHrw=s800-c-k-c0x00ffffff-no-rj",
+                        "width": 800,
+                        "height": 800
+                    }
+                },
+                "defaultLanguage": "zh-CN",
+                "localized": {
+                    "title": "腾讯视频",
+                    "description": "欢迎订阅腾讯视频，点击这里加入会员抢先看《外星女生柴小七2》《飞狐外传》《恋爱的夏天》等热播剧集！\n我们会为大家提供精彩热门的影视综艺内容\n开通会员功能，享受热门剧集抢先看！\nClick here to watch [My Girlfriend is an Alien S2]  [Side Story of Fox Volant] [Discovery of Romance] in advance.\nThank you for subscribing “Tencent Video” YouTube Channel~\n"
+                },
+                "country": "HK"
+            }
+        }
+    ]
+}
