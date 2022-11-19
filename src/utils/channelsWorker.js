@@ -24,8 +24,6 @@ let firstTry = true;
 let api_key;
 let api_key2;
 let base_url = 'https://www.googleapis.com/youtube/v3/playlistItems?&part=snippet&playlistId=';
-const netlifySaveApi = "";
-const netlifyGetApi = "";
 
 /* eslint-disable-next-line no-restricted-globals */
 self.onmessage = async (e) => {
@@ -35,7 +33,10 @@ self.onmessage = async (e) => {
     let apiKeys = e?.data?.apiKeys;
     if (!apiKeys) return;
     let cleanRun = e?.data?.cleanRun;
+    let root = e?.data?.root;
     let channelDict = {};
+    const netlifySaveApi = `${root}/.netlify/functions/saveChannels`;
+    const netlifyGetApi = `${root}/.netlify/functions/getChannels`;
 
     console.log("CHANNELSWORKER received:", playlist, apiKeys, cleanRun)
     const fetchDict = async (api) => {

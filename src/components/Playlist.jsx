@@ -141,7 +141,8 @@ const Playlist = () => {
       channelsWorker.postMessage({
         playlist: videos,
         apiKeys: [process.env.REACT_APP_YOUTUBE_API_KEY1, process.env.REACT_APP_YOUTUBE_API_KEY2],
-        cleanRun: true ////////TODO: We don't want to always do clean run, maybe make a menu option to recalculate top channels
+        cleanRun: true, ////////TODO: We don't want to always do clean run, maybe make a menu option to recalculate top channels
+        root: root
       });
     }
   }, [channelThumbs]);
