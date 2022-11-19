@@ -13,6 +13,11 @@ JUST RETURN DICTIONARY FROM DB
 ....then there's no reason to call the worker...whatever...
 ...will you be able to retrieve in sorted order?
 
+ultimately, this would be much better if we can take into account individual
+song scores, because KEAN DYSSO is in 2nd place, but definitely not my favorite
+this shouldn't be difficult, just get videoData, and then add a fraction of the score to count
+.....if we implement this, then we want to more regularly do a clean run
+...also it would be best if we didn't remove the whole collection, but wait until that becomes a problem
 */
 const TOP_CHANNELS_LENGTH = 30;
 let firstTry = true;
@@ -23,7 +28,7 @@ const netlifySaveApi = "";
 const netlifyGetApi = "";
 
 /* eslint-disable-next-line no-restricted-globals */
-self.onmessage = (e) => {
+self.onmessage = async (e) => {
     if (!e) return;
     let playlist = e?.data?.playlist;
     if (!playlist) return;
@@ -32,6 +37,7 @@ self.onmessage = (e) => {
     let cleanRun = e?.data?.cleanRun;
     let channelDict = {};
 
+    console.log("CHANNELSWORKER received:", playlist, apiKeys, cleanRun)
     const fetchDict = async (api) => {
         return await fetch(api).then(resp => resp.json());
     }
@@ -61,24 +67,27 @@ self.onmessage = (e) => {
             }
         }
     }
+    console.log("channelDict: ", channelDict);
     // { channel1: {count:count1}, channel2: {count:count2}, ...}
     // sort by count
     let channels = Object.keys(channelDict);
     channels = channels.sort((a, b) => channelDict[b].count - channelDict[a].count); //b-a is descending
+    console.log("sorted channels" + channels);
 
     ////// INITIAL/CLEAN RUN: fetch all songs from youtube
     api_key = apiKeys[0];
     api_key2 = apiKeys[1];
     let res;
     if (cleanRun) {
-        res = youTubeFetch();
+        res = await youTubeFetch("PLmIkV2QRPyhkiEl9jxtKvpIRg50n0rfSj");
+        console.log("CHANNELSWORKER fetch youtube playlist", res);
         // map channel ids
         for (let i = 0; i < res.length; i++) {
-            let channel = res.items[i]?.snippet?.videoOwnerChannelTitle;
-            let id = res.items[i].snippet?.videoOwnerChannelId;
+            let channel = res[i]?.snippet?.videoOwnerChannelTitle;
+            let id = res[i].snippet?.videoOwnerChannelId;
             if (channel) {
                 if (channelDict[channel]) {
-                    channelDict[channel] = { _id: channel, count: channelDict[channel], id: id }
+                    channelDict[channel] = { _id: channel, count: channelDict[channel].count, id: id }
                 }
             }
         }
@@ -86,16 +95,18 @@ self.onmessage = (e) => {
         // so get list of top 50 ids
         let ids = `${channelDict[channels[0]].id}`;
         for (let i = 1; i < 50; i++) {
-            ids += "," + channelDict[channels[i]].id;
+            if (channelDict[channels[i]]?.id)
+                ids += "," + channelDict[channels[i]].id;
         }
         // fetch channels
         base_url = `https://youtube.googleapis.com/youtube/v3/channels?part=snippet&id=${ids}`;
-        res = youTubeFetch(base_url);
-
+        console.log("base_url: " + base_url);
+        res = await youTubeFetch("PLmIkV2QRPyhkiEl9jxtKvpIRg50n0rfSj");
+        console.log("CHANNELSWORKER fetch youtube channels", res);
         // map image to channel
-        for (let i = 0; i < res.items.length; i++) {
-            let channel = res.items[i]?.snippet?.videoOwnerChannelTitle;
-            let thumb = findFirstThumbnail(res.items[i]?.snippet?.thumbnails);
+        for (let i = 0; i < res.length; i++) {
+            let channel = res[i]?.snippet?.title;
+            let thumb = findFirstThumbnail(res[i]?.snippet?.thumbnails);
             if (channel) {
                 if (channelDict[channel]) {
                     channelDict[channel].thumb = thumb;
@@ -107,8 +118,8 @@ self.onmessage = (e) => {
     for (let i = 0; i < 50; i++) {
         collection.push(channelDict[channels[i]]);
     }
-    console.log("CHANNELSWORKER channelDict: " + channelDict);
-    console.log("CHANNELSWORKER collection: " + collection)
+    console.log("CHANNELSWORKER channelDict: ", channelDict);
+    console.log("CHANNELSWORKER collection: ", collection)
     // upload to database, overwrite entire object
     console.log("CHANNELSWORKER save to db", JSON.stringify(collection));
     saveDict(netlifySaveApi, JSON.stringify(collection));
@@ -153,7 +164,7 @@ const youTubeFetch = async (res_id) => {
         let pagetoken = null;
         let res = [];
         let i = 0;
-        while (i < 100) { // get up to 5K songs
+        while (i < 20) { // get up to 5K songs///////////100
             let partialRes = await youTubeFetchInner(res_id, pagetoken);
             if (partialRes?.items) {
                 res.push(...partialRes?.items);
@@ -173,7 +184,6 @@ const youTubeFetch = async (res_id) => {
         throw new Error(e)
     }
 }
-
 
 function findFirstThumbnail(thumbs) {
     if (thumbs === null) {

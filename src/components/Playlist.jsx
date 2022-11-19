@@ -126,18 +126,22 @@ const Playlist = () => {
 
   // use this to fetch channelThumbs, it will be initiated by setting channelThumbs to {}
   useEffect(() => {
-    if (!channelThumbs) return;
+    if (!channelThumbs || Object.keys(channelThumbs).length > 0) return;
     console.log("channelThumbs", channelThumbs);
     // first check session
     const dict = sessionStorage.getObj("channelThumbs");
     if (!dict) {
-      channelsWorker.onmessage = ({ data: { dict } }) => {
-        sessionStorage.setObj("channelThumbs", dict)
-        setChannelThumbs(dict);
+      channelsWorker.onmessage = ({ data: { sortedList, channelDict } }) => {
+        sessionStorage.setObj("channelThumbs", channelDict)
+        console.log("channelThumbs", sortedList);
+        console.log("channelThumbs", channelDict);
+
+        setChannelThumbs(channelDict);
       };
       channelsWorker.postMessage({
         playlist: videos,
-        apiKeys: [process.env.REACT_APP_YOUTUBE_API_KEY1, process.env.REACT_APP_YOUTUBE_API_KEY2]
+        apiKeys: [process.env.REACT_APP_YOUTUBE_API_KEY1, process.env.REACT_APP_YOUTUBE_API_KEY2],
+        cleanRun: true ////////TODO: We don't want to always do clean run, maybe make a menu option to recalculate top channels
       });
     }
   }, [channelThumbs]);
