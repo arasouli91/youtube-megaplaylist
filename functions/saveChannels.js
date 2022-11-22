@@ -19,6 +19,9 @@ const handler = async (event) => {
 
         console.log("event.body in saveChannels", event.body);
 
+
+        console.log("event  in saveChannels", event);
+
         // remove whole collection
         collection.deleteMany({})
         /////// let's see what this event.body looks like first and then try
