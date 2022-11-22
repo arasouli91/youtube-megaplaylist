@@ -43,7 +43,18 @@ self.onmessage = async (e) => {
         return await fetch(api).then(resp => resp.json());
     }
     const saveDict = async (api, body) => {
-        return await fetch(api).then(resp => resp.json());
+        const response = await fetch(api, {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: "TEST TEST TEST SDJSD;LJKSFDK;SADK;KSL;AD"
+        });
+
+        response.json().then(data => {
+            console.log(data);
+        });
     }
 
     // subsequent runs: just return from DB

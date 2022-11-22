@@ -129,7 +129,7 @@ const Playlist = () => {
     if (!channelThumbs || Object.keys(channelThumbs).length > 0) return;
     console.log("channelThumbs", channelThumbs);
     // first check session
-    const dict = sessionStorage.getObj("channelThumbs");
+    const dict = null;/////////TODO: sessionStorage.getObj("channelThumbs");
     if (!dict) {
       channelsWorker.onmessage = ({ data: { sortedList, channelDict } }) => {
         sessionStorage.setObj("channelThumbs", channelDict)
