@@ -13,13 +13,12 @@ const handler = async (event) => {
         const database = (await clientPromise).db("youtube");
         const collection = database.collection("channel");
         const data = event.queryStringParameters["data"];
-        console.log(data);
         console.log(decodeURIComponent(data));
 
         // remove whole collection
         collection.deleteMany({})
         /////// let's see what this event.body looks like first and then try
-        collection.insertMany(decodeURIComponent(data))
+        collection.insertMany(JSON.parse(decodeURIComponent(data)))
 
         return {
             statusCode: 200,
