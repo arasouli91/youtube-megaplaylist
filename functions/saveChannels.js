@@ -15,12 +15,7 @@ const handler = async (event) => {
         const data = event.queryStringParameters["data"];
         console.log(decodeURIComponent(data));
 
-        // remove whole collection
         await collection.deleteMany({})
-        /////// let's see what this event.body looks like first and then try
-        let abc = JSON.parse(decodeURIComponent(data));
-        console.log(JSON.parse(decodeURIComponent(data)));
-        console.log(abc[0]);
         await collection.insertMany(JSON.parse(decodeURIComponent(data)))
 
         return {

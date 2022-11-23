@@ -32,6 +32,27 @@ const fetchDict = async (api) => {
 const saveDict = async (api, data) => {
     await fetch(api + data);
 }
+/*
+INITIAL/CLEAN RUN:
+Iterate playlist that was passed in
+-Map channel names to count of songs
+Sort this newly created channelDict into a list by count
+Fetch all songs from YouTube
+Iterate these songs to transform objects in channelDict to hold most relevant data
+Determine list of top 50 channels by using sorted list
+Fetch channel info for these from YouTube
+Iterate results mapping images into channelDict
+Push top 50 results from channelDict into collection
+Save to DB
+Return both channelDict and collection of sorted objects
+
+NON-CLEAN RUN:
+Get an unsorted list of objects from DB
+Convert this into channelDict
+Sort this newly created channelDict into a list by count
+Push top 50 results from channelDict into collection
+Return both channelDict and collection of sorted objects
+*/
 
 /* eslint-disable-next-line no-restricted-globals */
 self.onmessage = async (e) => {
@@ -40,7 +61,7 @@ self.onmessage = async (e) => {
     if (!playlist) return;
     let apiKeys = e?.data?.apiKeys;
     if (!apiKeys) return;
-    let cleanRun = e?.data?.cleanRun;
+    let cleanRun = e?.data?.cleanRun; // if clean run, we will recalculate, else get from DB
     let root = e?.data?.root;
     let channelDict = {};
     const netlifySaveApi = `${root}/.netlify/functions/saveChannels?data=`;
@@ -51,8 +72,8 @@ self.onmessage = async (e) => {
     // subsequent runs: just return from DB
     if (!cleanRun) {
         // netlifyRes is unsorted list of objects
-        let netlifyRes = fetchDict(netlifyGetApi);
-
+        let netlifyRes = await fetchDict(netlifyGetApi);
+        console.log("netlifyRes:", netlifyRes)
         // convert into channelDict
         for (let i = 0; i < netlifyRes.length; i++) {
             let obj = netlifyRes[i];
@@ -124,8 +145,10 @@ self.onmessage = async (e) => {
     console.log("CHANNELSWORKER channelDict: ", channelDict);
     console.log("CHANNELSWORKER collection: ", collection)
     // upload to database, overwrite entire object
-    console.log("CHANNELSWORKER save to db", JSON.stringify(collection));
-    saveDict(netlifySaveApi, encodeURIComponent(JSON.stringify(collection)));
+    if (cleanRun) {
+        console.log("CHANNELSWORKER save to db", JSON.stringify(collection));
+        saveDict(netlifySaveApi, encodeURIComponent(JSON.stringify(collection)));
+    }
 
     ///// in order to preserve sorted order, but also to have a dict, we return a sorted array and dict
     /* eslint-disable-next-line no-restricted-globals */
@@ -167,7 +190,7 @@ const youTubeFetch = async (res_id) => {
         let pagetoken = null;
         let res = [];
         let i = 0;
-        while (i < 20) { // get up to 5K songs///////////100
+        while (i < 100) { // get up to 5K songs
             let partialRes = await youTubeFetchInner(res_id, pagetoken);
             if (partialRes?.items) {
                 res.push(...partialRes?.items);

@@ -38,6 +38,7 @@ a {
 
 .root {
   background-color: rgb(24, 24, 24);
+  padding: 0;
 }
 
 .main-stk {
@@ -46,6 +47,7 @@ a {
 
 .left-side-nav {
   width: 100%;
+  margin-left: 20px;
 }
 
 .nav-dropdown {
@@ -107,22 +109,6 @@ li.selected {
   width: 540px;
   background-color: #2c2c2c;
   color: azure;
-}
-
-.category-btn {
-  height: 40px;
-  border-radius: 20px;
-  font-weight: 600;
-  text-transform: capitalize;
-  gap: 6px;
-  width: 120px;
-  display: flex;
-  align-items: center;
-  /*justify-content: start;*/
-  cursor: pointer;
-  padding-left: 16px;
-  padding-top: 4px;
-  padding-bottom: 4px;
 }
 
 .button {
@@ -324,6 +310,10 @@ li.selected {
 }
 
 @media screen and (max-width: 700px) {
+  .root div:first-child {
+    gap: 0;
+  }
+
   .scroll-horizontal {
     overflow: auto !important;
   }
@@ -342,6 +332,10 @@ li.selected {
 }
 
 @media screen and (max-width: 545px) {
+  .root div:first-child {
+    gap: 0;
+  }
+
   .search-bar {
     width: 200px;
     margin-left: 3px;

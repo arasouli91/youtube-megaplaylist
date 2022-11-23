@@ -23,6 +23,7 @@ const Playlist = () => {
   const [videoData, setVideoData] = useState(null);
   const [triggerReload, setTriggerReload] = useState(null);
   const [channelThumbs, setChannelThumbs] = useState(null);
+  const [sortedChannels, setSortedChannels] = useState(null);
 
   // Initially fetch playlist 
   useEffect(() => {
@@ -129,21 +130,33 @@ const Playlist = () => {
     if (!channelThumbs || Object.keys(channelThumbs).length > 0) return;
     console.log("channelThumbs", channelThumbs);
     // first check session
-    const dict = null;/////////TODO: sessionStorage.getObj("channelThumbs");
-    if (!dict) {
+    const dict = sessionStorage.getObj("channelThumbs");
+    const sortedChannels = sessionStorage.getObj("sortedChannels");
+
+    // not in session storage
+    if (!dict || !sortedChannels || sortedChannels.length === 0 || Object.keys(dict).length === 0) {
+      console.log("NOT IN SESSION STORAGE")
       channelsWorker.onmessage = ({ data: { sortedList, channelDict } }) => {
         sessionStorage.setObj("channelThumbs", channelDict)
+        sessionStorage.setObj("sortedChannels", sortedList)
         console.log("channelThumbs", sortedList);
         console.log("channelThumbs", channelDict);
 
         setChannelThumbs(channelDict);
+        setSortedChannels(sortedList);
       };
       channelsWorker.postMessage({
         playlist: videos,
         apiKeys: [process.env.REACT_APP_YOUTUBE_API_KEY1, process.env.REACT_APP_YOUTUBE_API_KEY2],
-        cleanRun: true, ////////TODO: We don't want to always do clean run, maybe make a menu option to recalculate top channels
+        cleanRun: false, ////////TODO: We don't want to always do clean run, maybe make a menu option to recalculate top channels
         root: root
       });
+      console.log(typeof (channelDict))
+    } else {
+      console.log("channelThumbs dict", dict);
+      console.log("channelThumbs sortedChannels", sortedChannels);
+      setChannelThumbs(dict);
+      setSortedChannels(sortedChannels);
     }
   }, [channelThumbs]);
 
@@ -196,7 +209,7 @@ const Playlist = () => {
   return (
     (videos ?
       <>
-        <Navbar searchHandler={searchHandler} setRandom={randomChanged} random={random} />
+        <Navbar searchHandler={searchHandler} setRandom={randomChanged} random={random} channels={sortedChannels} />
         <Stack
           height={2000}
           direction={"column"}

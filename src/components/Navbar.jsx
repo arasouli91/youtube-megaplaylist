@@ -16,9 +16,10 @@ import SortByAlphaIcon from '@mui/icons-material/SortByAlpha';
 import SortIcon from '@mui/icons-material/Sort';
 import SubscriptionsIcon from '@mui/icons-material/Subscriptions';
 import QueueMusicIcon from '@mui/icons-material/QueueMusic';
+import Home from '@mui/icons-material/Home';
 import { useEffect } from 'react';
 
-const Navbar = ({ searchHandler, setRandom, random }) => {
+const Navbar = ({ searchHandler, setRandom, random, channels }) => {
   const [localRandom, setLocalRandom] = React.useState(random);
   const [anchorEl1, setAnchorEl2] = React.useState(null);
   const [anchorEl2, setAnchorEl1] = React.useState(null);
@@ -45,6 +46,20 @@ const Navbar = ({ searchHandler, setRandom, random }) => {
     searchHandler("nightcore nightstyle");
     handleClose();
   }
+  const handleClickChannel = (ndx) => {
+    console.log("channel clicked", ndx);
+    searchHandler(channels[parseInt(ndx)]._id);
+    handleClose();
+  }
+  const handleHomeClick = (event) => {
+    // clear search, clear random
+    if (localRandom) {
+      setLocalRandom(false);
+      setRandom();
+    }
+    searchHandler("");
+    handleClose();
+  }
 
   return (
     <Stack
@@ -63,7 +78,11 @@ const Navbar = ({ searchHandler, setRandom, random }) => {
       }}
       className="flex-center"
     >
-      <div className='left-side-nav'></div>
+      <div className='left-side-nav'>
+        <Button>
+          <Home onClick={handleHomeClick} className='nav-button'></Home>
+        </Button>
+      </div>
       <div className=".search-bar-container">
         <SearchBar searchHandler={searchHandler}></SearchBar>
       </div>
@@ -91,7 +110,15 @@ const Navbar = ({ searchHandler, setRandom, random }) => {
           onClose={handleClose}
         >
           {/**GENERATE CHANNELS*/}
-          <MenuItem onClick={handleClose}><ShuffleIcon />channel1</MenuItem>
+          {channels && (channels).map((channel, index) =>
+            <MenuItem onClick={(event) => handleClickChannel(index)}>
+              <div
+                title={index} className="list-item-ndx">{`${index + 1}`}
+              </div>
+              <img title={index} src={`${channel.thumb}`} className="list-item-img" alt="t" />
+              <span className="list-item-name">{channel._id}</span>
+            </MenuItem>
+          )}
         </Menu>
 
         {/*GENERAL MENU*/}
