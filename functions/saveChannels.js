@@ -16,12 +16,12 @@ const handler = async (event) => {
         console.log(decodeURIComponent(data));
 
         // remove whole collection
-        collection.deleteMany({})
+        await collection.deleteMany({})
         /////// let's see what this event.body looks like first and then try
         let abc = JSON.parse(decodeURIComponent(data));
         console.log(JSON.parse(decodeURIComponent(data)));
         console.log(abc[0]);
-        collection.insertMany(JSON.parse(decodeURIComponent(data)))
+        await collection.insertMany(JSON.parse(decodeURIComponent(data)))
 
         return {
             statusCode: 200,
