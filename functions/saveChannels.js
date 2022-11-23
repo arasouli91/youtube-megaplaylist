@@ -18,6 +18,9 @@ const handler = async (event) => {
         // remove whole collection
         collection.deleteMany({})
         /////// let's see what this event.body looks like first and then try
+        let abc = JSON.parse(decodeURIComponent(data));
+        console.log(JSON.parse(decodeURIComponent(data)));
+        console.log(abc[0]);
         collection.insertMany(JSON.parse(decodeURIComponent(data)))
 
         return {
