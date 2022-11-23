@@ -19,7 +19,7 @@ const handler = async (event) => {
         // remove whole collection
         collection.deleteMany({})
         /////// let's see what this event.body looks like first and then try
-        //collection.insertMany()
+        collection.insertMany(decodeURIComponent(data))
 
         return {
             statusCode: 200,
