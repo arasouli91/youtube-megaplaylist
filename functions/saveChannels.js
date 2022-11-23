@@ -12,15 +12,9 @@ const handler = async (event) => {
     try {
         const database = (await clientPromise).db("youtube");
         const collection = database.collection("channel");
-
-        /*
-        body: '{\r\n    "test":"TEST DATA DASDASDASDASDASDASDASD"\r\n}',
-        */
-
-        console.log("event.body in saveChannels", event.body);
-
-
-        console.log("event  in saveChannels", event);
+        const data = event.queryStringParameters["data"];
+        console.log(data);
+        console.log(decodeURIComponent(data));
 
         // remove whole collection
         collection.deleteMany({})

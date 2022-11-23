@@ -25,6 +25,14 @@ let api_key;
 let api_key2;
 let base_url = 'https://www.googleapis.com/youtube/v3/playlistItems?&part=snippet&playlistId=';
 
+
+const fetchDict = async (api) => {
+    return await fetch(api).then(resp => resp.json());
+}
+const saveDict = async (api, data) => {
+    await fetch(api + data);
+}
+
 /* eslint-disable-next-line no-restricted-globals */
 self.onmessage = async (e) => {
     if (!e) return;
@@ -35,27 +43,10 @@ self.onmessage = async (e) => {
     let cleanRun = e?.data?.cleanRun;
     let root = e?.data?.root;
     let channelDict = {};
-    const netlifySaveApi = `${root}/.netlify/functions/saveChannels`;
+    const netlifySaveApi = `${root}/.netlify/functions/saveChannels?data=`;
     const netlifyGetApi = `${root}/.netlify/functions/getChannels`;
 
     console.log("CHANNELSWORKER received:", playlist, apiKeys, cleanRun)
-    const fetchDict = async (api) => {
-        return await fetch(api).then(resp => resp.json());
-    }
-    const saveDict = async (api, body) => {
-        const response = await fetch(api, {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-            },
-            body: "TEST TEST TEST SDJSD;LJKSFDK;SADK;KSL;AD"
-        });
-
-        response.json().then(data => {
-            console.log(data);
-        });
-    }
 
     // subsequent runs: just return from DB
     if (!cleanRun) {
@@ -134,7 +125,7 @@ self.onmessage = async (e) => {
     console.log("CHANNELSWORKER collection: ", collection)
     // upload to database, overwrite entire object
     console.log("CHANNELSWORKER save to db", JSON.stringify(collection));
-    saveDict(netlifySaveApi, JSON.stringify(collection));
+    saveDict(netlifySaveApi, encodeURIComponent(JSON.stringify(collection)));
 
     ///// in order to preserve sorted order, but also to have a dict, we return a sorted array and dict
     /* eslint-disable-next-line no-restricted-globals */
