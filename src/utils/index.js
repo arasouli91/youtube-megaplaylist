@@ -1,5 +1,3 @@
-import axios from 'axios';
-
 let worker = new Worker(new URL('./worker.js', import.meta.url));
 let searchDictWorker = new Worker(new URL('./searchDictWorker.js', import.meta.url));
 
@@ -38,26 +36,34 @@ const youTubeFetchInner = async (playlist_id, page_token) => {
   }
 }
 
-//////// TODO:
-/// Keep playlist1 stored, only retrieve it if it is not in localStorage
-/// basically just do the same algo we have here, but only for playlist2
-/// if for any reason we see that our cached playlist is less than 5000, then we know that it's time to get playlist1 again
-export const youTubeFetch = async (playlist_id) => {
+/*
+WE HAVE TO DO WHAT WE ARE DOING HERE BUT FOR N PLAYLISTS
+Playlist is dealing with the sorting
+...but how does it know what are the recent ones?
+we determine that by looking at cache... so we will ultimately just keep one playlist as the main
+the main playlist is the one where we consider recent additions, the other playlists will just get added in
+otherwise there would be no way to know which playlists were recently added to
+
+so, the prev length needs to only be considering that of the main playlist
+
+let's first consider the path of taking whole remote....only then do we even have to fetch from secondary playlists
+*/
+export const youTubeFetch = async (playlist_ids) => {
   // keep getting next page token and concatenating results
   try {
     let pagetoken = null;
     let resObj = { res: [], shouldSort: true };
     let i = 0;
     while (i < 100) { // get up to 5K songs
-      let partialRes = await youTubeFetchInner(playlist_id, pagetoken);
+      let partialRes = await youTubeFetchInner(playlist_ids[0], pagetoken);
       // determine whether to take cached or get whole playlist from remote
-      if (i === 0) {
+      if (false) { ///////////////TODO: i === 0
         resObj = checkLocalCache(partialRes);
         if (resObj.res.length > 0) {
           console.log("return cached list,resObj", resObj)
           // either take local cache or take local cache with added videos diff
           return resObj;
-        }
+        } //else take whole remote
       }
       if (partialRes?.items) {
         resObj.res.push(...partialRes?.items);
@@ -68,12 +74,17 @@ export const youTubeFetch = async (playlist_id) => {
       }
       ++i;
     }
+    // since we did not return cached playlist, at this point means we will be return all remote
+    // now let us get from secondary playlists
+    let secondaryPlaylistsRes = await getSecondaryPlaylists(playlist_ids);
+    console.log("secondaryPlaylistsRes", secondaryPlaylistsRes)
+    resObj.res.push(...secondaryPlaylistsRes);
 
     // returned whole remote playlist
     console.log("return remote list, resObj", resObj)
     // update prev len, going forward we compare against last time we fetched everything
     localStorage.setItem("prevLength", resObj.res.length);
-    return resObj
+    return resObj // shouldSort will be true
   }
   catch (e) {
     throw new Error(e)
@@ -104,6 +115,32 @@ function checkLocalCache(res) {
 
   // return the cached + new songs. We should sort matching threshold of sortWorker otherwise it will discard some songs
   return { res: newPlaylist, shouldSort: diff > SORT_LIST_THRESHOLD };
+}
+
+const getSecondaryPlaylists = async (playlist_ids) => {
+  let res = [];
+  try {
+    for (let j = 1; j < playlist_ids.length; j++) {
+      // keep getting next page token and concatenating results
+      let pagetoken = null;
+      let i = 0;
+      while (i < 100) { // get up to 5K songs
+        let partialRes = await youTubeFetchInner(playlist_ids[j], pagetoken);
+        if (partialRes?.items) {
+          res.push(...partialRes?.items);
+        }
+        pagetoken = partialRes?.nextPageToken;
+        if (!pagetoken) {
+          break;
+        }
+        ++i;
+      }
+    }
+    return res;
+  }
+  catch (e) {
+    throw new Error(e)
+  }
 }
 
 // slim down playlist object and then cache it 
@@ -161,24 +198,7 @@ Storage.prototype.setObj = function (key, obj) {
 }
 Storage.prototype.getObj = function (key) {
   let item = this.getItem(key);
-  console.log(item)
   if (item !== "undefined")
     return JSON.parse(item);
   return null;
 }
-
-export const BASE_URL = 'https://youtube-v31.p.rapidapi.com';
-export const options = {
-  params: {
-    maxResults: 50,
-  },
-  headers: {
-    'X-RapidAPI-Key': process.env.REACT_APP_RAPID_API_KEY,
-    'X-RapidAPI-Host': 'youtube-v31.p.rapidapi.com',
-  },
-};
-
-export const axiosGetReq = async (url) => {
-  const res = await axios.get(`${BASE_URL}/${url}`, options);
-  return res.data;
-};

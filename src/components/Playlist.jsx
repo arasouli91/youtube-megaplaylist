@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Stack, Box } from '@mui/material';
 
-import { Videos, VideoDetail2, Loader, VideoBar, SideBar } from '.';
+import { Videos, VideoPlayer, Loader, VideoBar, SideBar } from '.';
 import { youTubeFetch, calculateSearchResults, savePlaylist, buildSearchDictionary } from '../utils';
 import { Navbar } from '.';
 
@@ -27,10 +27,9 @@ const Playlist = () => {
 
   // Initially fetch playlist 
   useEffect(() => {
-
     const fetchVids = async () => {
       /////TODO: we will be adding a second playlist, or rather variable number of playlists
-      let resObj = await youTubeFetch("PLmIkV2QRPyhkiEl9jxtKvpIRg50n0rfSj");
+      let resObj = await youTubeFetch(["PLmIkV2QRPyhkiEl9jxtKvpIRg50n0rfSj", "PLmIkV2QRPyhk2bbw0_PNWb_mv7NGY4kwC"]);
       setVideos(resObj.res)
       setShouldSort(resObj.shouldSort)
       playVideo(resObj.res[0].snippet)
@@ -70,6 +69,7 @@ const Playlist = () => {
           console.log("  build search dictionary")
           buildSearchDictionary(playlist);
         };
+        console.log("videoData", videoData)
         sortWorker.postMessage({ playlist: videos, videoData: videoData });
         ///// save to local storage
       } else {
@@ -182,6 +182,7 @@ const Playlist = () => {
   const searchHandler = (search) => {
     if (!search || search === "") {
       setVideoSubset(null);
+      playVideo(videos[0].snippet);
       return;
     }
     let res = calculateSearchResults(search);
@@ -214,7 +215,7 @@ const Playlist = () => {
           height={2000}
           direction={"column"}
           className='main-stk'>
-          <VideoDetail2
+          <VideoPlayer
             video={videoSubset ? videoSubset[index].snippet : videos[index].snippet}
             videoFinished={videoFinished}
           />

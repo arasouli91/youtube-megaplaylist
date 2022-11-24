@@ -10,7 +10,7 @@ import { Loader } from '.';
 // but if we are managing index, the parent will want to know as well
 // so let us just tell the parent everytime a video finishes
 
-const VideoDetail2 = ({ video, videoFinished }) => {
+const VideoPlayer = ({ video, videoFinished }) => {
   if (!video) <Loader />;
   const [width, setWidth] = useState(document.documentElement.clientWidth);
 
@@ -39,7 +39,6 @@ const VideoDetail2 = ({ video, videoFinished }) => {
           >
             <Box flex={1}>
               <Box sx={{ width: '100%', position: 'sticky', top: '100px' }}>
-
                 <YouTube
                   videoId={video?.resourceId?.videoId}
                   opts={opts}
@@ -54,13 +53,5 @@ const VideoDetail2 = ({ video, videoFinished }) => {
     </>
   );
 };
-/*
-Do we want a side bar and a grid view?
-Sounds good.
 
-We will want to change thumbnails to be more like youtube playlist
-
-
-*/
-
-export default VideoDetail2;
+export default VideoPlayer;

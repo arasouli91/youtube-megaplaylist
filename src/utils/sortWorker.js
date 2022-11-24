@@ -52,13 +52,14 @@ self.onmessage = (e) => {
         // push those with metrics to list2 and those without to list3
         for (let i = INITIAL_LEN; i < playlist.length; i++) {
             let id = playlist[i]?.snippet?.resourceId?.videoId;
+
             // exclude dupes
             if (visited[id]) {
                 ++dupes;
                 continue;
             }
             visited[id] = true;
-            if (videoDict[id]) {
+            if (videoDict[id] !== undefined) {
                 list2.push(playlist[i]);
             } else {
                 list3.push(playlist[i]);
@@ -73,6 +74,7 @@ self.onmessage = (e) => {
         }
         // sort list2 with custom comparator based on sorted index from DB
         list2 = list2.sort(comp);
+        console.log("SORTED LIST2", list2);
         // concat lists
         playlist = list1.concat(list2).concat(list3);
     }

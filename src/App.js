@@ -3,7 +3,6 @@ import { Box } from '@mui/material';
 import 'bootstrap/dist/css/bootstrap.css';
 
 import {
-  VideoDetail,
   Playlist
 } from './components';
 
@@ -21,7 +20,6 @@ const App = () => {
       >
         <Switch>
           <Route exact path='/' component={Playlist} />
-          <Route path='/video/:id' component={VideoDetail} />
         </Switch>
       </Box>
     </Router>

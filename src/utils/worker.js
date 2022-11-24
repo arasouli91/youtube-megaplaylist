@@ -38,15 +38,7 @@ self.onmessage = (e) => {
     self.postMessage({
         playlist: resPlaylist,
     });
-
-    // later we will also sort playlist here
 }
-// once you reach an element that has no .id
-// we know that the rest was already previously processed
-
-// we also want to prepare search results dict 
-// and save the results to session storage
-// probably with a different worker
 
 
 function findFirstThumbnail(thumbs) {

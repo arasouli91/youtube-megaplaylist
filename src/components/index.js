@@ -3,7 +3,6 @@ export { default as Navbar } from './Navbar';
 export { default as SearchBar } from './SearchBar';
 export { default as VideoBar } from './VideoBar';
 export { default as SideBar } from './SideBar';
-export { default as VideoDetail } from './VideoDetail';
-export { default as VideoDetail2 } from './VideoDetail2';
+export { default as VideoPlayer } from './VideoPlayer';
 export { default as Videos } from './Videos';
 export { default as Playlist } from './Playlist';
