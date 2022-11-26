@@ -1,7 +1,7 @@
 import React from 'react';
 import { Box, Stack } from '@mui/material';
 import YouTube from "react-youtube";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Loader } from '.';
 
 const VideoPlayer = ({ video, videoFinished }) => {
@@ -9,6 +9,10 @@ const VideoPlayer = ({ video, videoFinished }) => {
   const [width, setWidth] = useState(document.documentElement.clientWidth);
   // no, there isn't actually a percentage that makes the height appropriate across resolutions
   const [height, setHeight] = useState(document.documentElement.clientHeight * .15);
+
+  useEffect(() => {
+    setTimeout(displayWindowSize, 800);
+  }, []);
 
   function displayWindowSize() {
     setWidth(document.documentElement.clientWidth);
