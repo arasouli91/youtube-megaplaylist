@@ -18,7 +18,7 @@ const root = process.env.REACT_APP_NETLIFY_ROOT ? process.env.REACT_APP_NETLIFY_
 // but if we are managing index, the parent will want to know as well
 // so let us just tell the parent everytime a video finishes
 
-const VideoBar = ({ video, setChannel, skip, pushToQueue }) => {
+const VideoBar = ({ video, setChannel, skip, pushToQueue, useMetrics }) => {
   if (!video) <Loader />;
   const [localLikes, setLocalLikes] = useState(video?.likes);
 
@@ -30,17 +30,20 @@ const VideoBar = ({ video, setChannel, skip, pushToQueue }) => {
 
   const handleLikes = async (likes) => {
     setLocalLikes(localLikes + likes);
-    await fetch(root + `/.netlify/functions/like?id=${video.resourceId.videoId}&likes=${likes}`)
+    if (useMetrics)
+      await fetch(root + `/.netlify/functions/like?id=${video.resourceId.videoId}&likes=${likes}`)
   }
   const setEnd = async (likes) => {
     const end = -1; // idk how to get current time
-    await fetch(root + `/.netlify/functions/setStartEnd?id=${video.resourceId.videoId}&end=${end}`)
+    if (useMetrics)
+      await fetch(root + `/.netlify/functions/setStartEnd?id=${video.resourceId.videoId}&end=${end}`)
     skip();
   }
   const setStart = async () => {
     const start = -1; // idk how to get current time
     // maybe have to set time when song starts
-    await fetch(root + `/.netlify/functions/setStartEnd?id=${video.resourceId.videoId}&likes=${start}`)
+    if (useMetrics)
+      await fetch(root + `/.netlify/functions/setStartEnd?id=${video.resourceId.videoId}&likes=${start}`)
   }
 
   //// we should have add to queue button on the songs themselves

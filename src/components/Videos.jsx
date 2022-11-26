@@ -24,7 +24,7 @@ const Videos = ({ videos, curNdx, videoSelected, isQueue, pushToQueue }) => {
   }, []);
 
   function displayWindowSize() {
-    if (document.documentElement.clientWidth < 660)
+    if (document.documentElement.clientWidth <= 660)
       setListWidth(document.documentElement.clientWidth);
   }
 

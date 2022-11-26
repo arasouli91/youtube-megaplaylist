@@ -15,24 +15,27 @@ const root = process.env.REACT_APP_NETLIFY_ROOT ? process.env.REACT_APP_NETLIFY_
 // but if we are managing index, the parent will want to know as well
 // so let us just tell the parent everytime a video finishes
 
-const SideBar = ({ video, skip, addLikes, pushToQueue }) => {
+const SideBar = ({ video, skip, addLikes, pushToQueue, useMetrics }) => {
   if (!video) <Loader />;
 
   const handleLikes = async (likes) => {
     console.log("handleLikes", likes);
     console.log("video", video);
     addLikes(likes);
-    await fetch(root + `/.netlify/functions/like?id=${video.resourceId.videoId}&likes=${likes}`)
+    if (useMetrics)
+      await fetch(root + `/.netlify/functions/like?id=${video.resourceId.videoId}&likes=${likes}`)
   }
   const setEnd = async (likes) => {
     const end = -1; // idk how to get current time
-    await fetch(root + `/.netlify/functions/setStartEnd?id=${video.resourceId.videoId}&end=${end}`)
+    if (useMetrics)
+      await fetch(root + `/.netlify/functions/setStartEnd?id=${video.resourceId.videoId}&end=${end}`)
     skip();
   }
   const setStart = async () => {
     const start = -1; // idk how to get current time
     // maybe have to set time when song starts
-    await fetch(root + `/.netlify/functions/setStartEnd?id=${video.resourceId.videoId}&likes=${start}`)
+    if (useMetrics)
+      await fetch(root + `/.netlify/functions/setStartEnd?id=${video.resourceId.videoId}&likes=${start}`)
   }
 
   return (

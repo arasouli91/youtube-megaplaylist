@@ -9,7 +9,7 @@ let channelsWorker = new Worker(new URL('../utils/channelsWorker.js', import.met
 let sortWorker = new Worker(new URL('../utils/sortWorker.js', import.meta.url));
 const root = process.env.REACT_APP_NETLIFY_ROOT ? process.env.REACT_APP_NETLIFY_ROOT : "";
 
-const Playlist = () => {
+const Playlist = ({ useMetrics }) => {
   // id will either be incremented or random selected when a video finishes
   // or it will be chosen from list
   const [index, setIndex] = useState(0);
@@ -117,7 +117,8 @@ const Playlist = () => {
     setTimeout(async () => {
       console.log("in timeout callback halftime,", halftime);
       console.log(`videodetails._id ${videoData._id}`);
-      await fetch(root + `/.netlify/functions/checkVideoPlaying?id=${videoData._id}`)
+      if (useMetrics)
+        await fetch(root + `/.netlify/functions/checkVideoPlaying?id=${videoData._id}`)
     }, halftime);
   }
 
@@ -278,6 +279,7 @@ const Playlist = () => {
             triggerReload={triggerReload}
             skip={videoFinished}
             pushToQueue={pushToQueue}
+            useMetrics={useMetrics}
           />
           <Box className='bottom-half' px={1} py={{ md: 1, xs: 5 }}>
             <div className={`left-side-of-playlist ${hideQueue ? "hide-child" : ""}`}>
@@ -297,6 +299,7 @@ const Playlist = () => {
               triggerReload={triggerReload}
               skip={videoFinished}
               pushToQueue={pushToQueue}
+              useMetrics={useMetrics}
             />
           </Box>
           {/*<Videos videos={videos} />*/}
