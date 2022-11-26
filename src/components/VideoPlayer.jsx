@@ -4,15 +4,11 @@ import YouTube from "react-youtube";
 import { useState } from "react";
 import { Loader } from '.';
 
-// We sohuld only know about current video?
-// If so, then we have to ask parent for next video every time video finishes
-// We could instead, be given an array and an index
-// but if we are managing index, the parent will want to know as well
-// so let us just tell the parent everytime a video finishes
-
 const VideoPlayer = ({ video, videoFinished }) => {
   if (!video) <Loader />;
   const [width, setWidth] = useState(document.documentElement.clientWidth);
+  // no, there isn't actually a percentage that makes the height appropriate across resolutions
+  const [height, setHeight] = useState(document.documentElement.clientHeight * .15);
 
   function displayWindowSize() {
     setWidth(document.documentElement.clientWidth);
@@ -22,7 +18,7 @@ const VideoPlayer = ({ video, videoFinished }) => {
   window.addEventListener("resize", displayWindowSize);
 
   const opts = {
-    height: "200",
+    height: 200,
     width: width - 26,
     playerVars: {
       // https://developers.google.com/youtube/player_parameters

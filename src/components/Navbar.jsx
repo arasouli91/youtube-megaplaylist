@@ -5,7 +5,6 @@ import Button from '@mui/material/Button';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import MenuIcon from '@mui/icons-material/Menu';
-import LeaderboardIcon from '@mui/icons-material/Leaderboard'
 import ShuffleIcon from '@mui/icons-material/Shuffle'
 import CloudDownloadIcon from '@mui/icons-material/CloudDownload';
 import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
@@ -17,16 +16,13 @@ import SortIcon from '@mui/icons-material/Sort';
 import SubscriptionsIcon from '@mui/icons-material/Subscriptions';
 import QueueMusicIcon from '@mui/icons-material/QueueMusic';
 import Home from '@mui/icons-material/Home';
-import { useEffect } from 'react';
 
-const Navbar = ({ searchHandler, setRandom, random, channels }) => {
+const Navbar = ({ searchHandler, setRandom, random, channels, toggleQueue }) => {
   const [localRandom, setLocalRandom] = React.useState(random);
   const [anchorEl1, setAnchorEl2] = React.useState(null);
   const [anchorEl2, setAnchorEl1] = React.useState(null);
   const open1 = Boolean(anchorEl1);
   const open2 = Boolean(anchorEl2);
-  const handleQueueClick = (event) => {
-  };
   const handleClick = (event) => {
     setAnchorEl1(event.currentTarget);
   };
@@ -90,7 +86,7 @@ const Navbar = ({ searchHandler, setRandom, random, channels }) => {
         {/*QUEUE BUTTON*/}
         <Button
           className={"nav-button"}
-          onClick={handleQueueClick}
+          onClick={toggleQueue}
         >
           <QueueMusicIcon></QueueMusicIcon>
         </Button>

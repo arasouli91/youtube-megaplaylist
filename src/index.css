@@ -73,7 +73,6 @@ a {
 
 .menu li:hover {
   background-color: #373737;
-
 }
 
 .menu svg {
@@ -254,7 +253,29 @@ li.selected {
   min-height: 76px;
 }
 
+.list-item-queue {
+  color: #d0d0d0;
+  min-width: 25px;
+  min-height: 25px;
+}
+
+.list-item-queue:hover {
+  min-width: 30px;
+  min-height: 30px;
+  color: #9e9e9e;
+}
+
+.queue .list-item-img {
+  min-width: 100px;
+  min-height: 76px;
+  width: 110px;
+}
+
 .hide {
+  display: none !important;
+}
+
+.hide-child div:first-child {
   display: none !important;
 }
 
@@ -329,6 +350,10 @@ li.selected {
   .search-bar {
     margin-left: 8px;
   }
+
+  .left-side-nav {
+    margin-left: 0;
+  }
 }
 
 @media screen and (max-width: 545px) {
@@ -366,6 +391,34 @@ li.selected {
 
   .search-bar-input {
     width: 88px;
+  }
+
+}
+
+@media screen and (max-width: 415px) {
+  .root div:first-child {
+    gap: 0;
+  }
+
+  .nav-dropdown {
+    place-content: center;
+  }
+
+  .list-item-img {
+    border-radius: 8%;
+    margin-left: 4px;
+    width: 50px;
+    margin-right: 5px;
+    min-width: 50px;
+    min-height: 50px;
+  }
+
+  .search-bar {
+    width: 124px;
+  }
+
+  .search-bar-input {
+    width: 48px;
   }
 
 }

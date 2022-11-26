@@ -15,38 +15,24 @@ const root = process.env.REACT_APP_NETLIFY_ROOT ? process.env.REACT_APP_NETLIFY_
 // but if we are managing index, the parent will want to know as well
 // so let us just tell the parent everytime a video finishes
 
-const SideBar = ({ video, addLikes }) => {
+const SideBar = ({ video, skip, addLikes, pushToQueue }) => {
   if (!video) <Loader />;
 
   const handleLikes = async (likes) => {
     console.log("handleLikes", likes);
     console.log("video", video);
-    /////TODO: we can't guarantee that video object has ._id
     addLikes(likes);
-    await fetch(root + `/.netlify/functions/like?id=${video._id}&likes=${likes}`)
-  }
-  const skipSong = async () => {
-    //////// we should call video selected with next index
+    await fetch(root + `/.netlify/functions/like?id=${video.resourceId.videoId}&likes=${likes}`)
   }
   const setEnd = async (likes) => {
     const end = -1; // idk how to get current time
-    await fetch(root + `/.netlify/functions/setStartEnd?id=${video._id}&end=${end}`)
-    skipSong();
+    await fetch(root + `/.netlify/functions/setStartEnd?id=${video.resourceId.videoId}&end=${end}`)
+    skip();
   }
   const setStart = async () => {
     const start = -1; // idk how to get current time
     // maybe have to set time when song starts
-    await fetch(root + `/.netlify/functions/setStartEnd?id=${video._id}&likes=${start}`)
-  }
-  const pushToQueue = async () => {
-    ///// playlist should manage queue state, then we can go to a separate page
-    ///// we have a top menu, which is owned by playlist
-    ///// this will navigate us to queue page
-    ////// or, it would be really cool if we could see the queue side by side
-    //// with normal playlist, then we can just click into whichever we want
-    //// amd continue to add to the queue, fuck that is so good!!!!
-    //// we should have add to queue button on the songs themselves
-    //// and probably want to have like/dislike on songs themselves
+    await fetch(root + `/.netlify/functions/setStartEnd?id=${video.resourceId.videoId}&likes=${start}`)
   }
 
   return (
@@ -71,7 +57,7 @@ const SideBar = ({ video, addLikes }) => {
                 className="side-bar-btn"
               />
               <SkipNextIcon
-                onClick={(e) => skipSong()}
+                onClick={(e) => skip()}
                 sx={{ mr: '5px', width: '120px', height: '120px' }}
                 className="side-bar-btn"
               />

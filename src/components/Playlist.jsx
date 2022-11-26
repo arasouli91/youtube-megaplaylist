@@ -15,7 +15,7 @@ const Playlist = () => {
   const [index, setIndex] = useState(0);
   const [random, setRandom] = useState(false);
   const [videos, setVideos] = useState(null);
-  const [VideoDetails, setVideoDetails] = useState(null);
+  const [videoDetails, setVideoDetails] = useState(null);
   const [videoSubset, setVideoSubset] = useState(null);
   const [listSorted, setListSorted] = useState(false);
   const [shouldSort, setShouldSort] = useState(false);
@@ -24,6 +24,10 @@ const Playlist = () => {
   const [triggerReload, setTriggerReload] = useState(null);
   const [channelThumbs, setChannelThumbs] = useState(null);
   const [sortedChannels, setSortedChannels] = useState(null);
+  const [qVideos, setQVideos] = useState(null);
+  const [qIndex, setQIndex] = useState(0);
+  const [hideQueue, setHideQueue] = useState(true);
+  const [isQueuePlaying, setIsQueuePlaying] = useState(false);
 
   // Initially fetch playlist 
   useEffect(() => {
@@ -83,9 +87,9 @@ const Playlist = () => {
 
   const playVideo = async (videoPlaying) => {
     console.log("playVideo")
-    // first decide what local details to pass into VideoBar by using index
+    // first decide what local details to pass into VideoBar/Player by using index
     console.log("videoPlaying set video details", videoPlaying);
-    // set videoDetails state
+    // set videoDetails state, this is so that we can hopefully first let the video player know
     setVideoDetails(videoPlaying);
     // then, fetch other details and play video in DB
     let videoData = await fetch(root + `/.netlify/functions/playVideo?id=${videoPlaying?.resourceId?.videoId}`)
@@ -117,14 +121,6 @@ const Playlist = () => {
     }, halftime);
   }
 
-  useEffect(() => {
-    console.log("index changed", index)
-    if (!videos && !videoSubset) return;
-    console.log(" video at index", videos[index]);
-    const videoPlaying = videoSubset ? videoSubset[index]?.snippet : videos[index]?.snippet;
-    playVideo(videoPlaying);
-  }, [index])
-
   // use this to fetch channelThumbs, it will be initiated by setting channelThumbs to {}
   useEffect(() => {
     if (!channelThumbs || Object.keys(channelThumbs).length > 0) return;
@@ -148,7 +144,7 @@ const Playlist = () => {
       channelsWorker.postMessage({
         playlist: videos,
         apiKeys: [process.env.REACT_APP_YOUTUBE_API_KEY1, process.env.REACT_APP_YOUTUBE_API_KEY2],
-        cleanRun: false, ////////TODO: We don't want to always do clean run, maybe make a menu option to recalculate top channels
+        cleanRun: false, ////////TODO: make a menu option to recalculate top channels, notice just setting this to true is not enough we still need to clear session
         root: root
       });
       console.log(typeof (channelDict))
@@ -160,24 +156,50 @@ const Playlist = () => {
     }
   }, [channelThumbs]);
 
-
   const videoFinished = () => {
-    if (random) {
-      //////prevent same index twice?
+    console.log("inside videoFinished isQueuePlaying qIndex", isQueuePlaying, qIndex);
+    let ndx = 1 + (isQueuePlaying ? qIndex : index);
+    console.log("inside videoFinished isQueuePlaying ndx", isQueuePlaying, ndx)
+    if (random && !isQueuePlaying) { ///TODO: do we want to allow random on queue?
       const mod = videoSubset ? videoSubset.length : videos.length;
       let randomNdx = (Math.random() * 100000) % mod;
+      randomNdx = parseInt(randomNdx);
       console.log("video finished, index", index + 1);
       console.log(parseInt(randomNdx))
       console.log("video at index", videos[parseInt(randomNdx)])
-      setIndex(parseInt(randomNdx));
+      if (index === randomNdx) // prevent same ndx twice
+        videoFinished();
+      else
+        videoSelected(randomNdx, isQueuePlaying);
     } else {
       console.log("video finished, index", index + 1);
       console.log("video at index", videos[index + 1])
-      setIndex(parseInt(index) + 1);
+      console.log("inside videoFinished isQueuePlaying ndx", isQueuePlaying, ndx)
+      videoSelected(ndx, isQueuePlaying)
     }
   }
-  const videoSelected = (ndx) => {
-    setIndex(parseInt(ndx));
+
+  const videoSelected = (ndx, isQueue) => {
+    console.log("videoSelected isQueue", isQueue);
+    if (!qVideos && !videoSubset && !videos) return;
+    // detect switching between playlists
+    if ((isQueuePlaying && !isQueue) || (!isQueuePlaying && isQueue)) {
+      setIsQueuePlaying(!isQueuePlaying);
+    }
+    if (isQueue) {
+      console.log("videoSelected qVideos ndx", qVideos, ndx)
+      if (parseInt(ndx) >= qVideos.length)
+        return; // end of list
+      setQIndex(parseInt(ndx));
+      playVideo(qVideos[ndx].snippet);
+    }
+    else {
+      let list = videoSubset ? videoSubset : videos;
+      if (parseInt(ndx) >= list.length)
+        return; // end of list
+      setIndex(parseInt(ndx));
+      playVideo(list[ndx].snippet);
+    }
   }
   const searchHandler = (search) => {
     if (!search || search === "") {
@@ -187,47 +209,95 @@ const Playlist = () => {
     }
     let res = calculateSearchResults(search);
     res = res.map((ndx) => videos[ndx]);
-    setIndex(0);
     if (res.length > 0) {
       setVideoSubset(res);
-      playVideo(res[0].snippet);
     } else {
       setVideoSubset(null);
-      playVideo(videos[0].snippet);
     }
+    videoSelected(0, isQueuePlaying);
   }
 
   const addLikes = (likes) => {
-    VideoDetails.likes += likes;
-    setVideoDetails(VideoDetails);
-    setTriggerReload(triggerReload ? false : true);
+    /////// TODO: THIS DOESN'T NEED TRIGGER RELOAD?
+    ///// I think, YOU JUST AREN'T DOING THIS CORRECTLY, SHOULDN'T ADD TO SAME OBJECT
+    ///// ALSO, VIDBAR AND SIDEBAR SHOULD BOTH BE USING THIS SO THEY STAY IN SYNC
+    videoDetails.likes += likes;
+    setVideoDetails(videoDetails);
+    setTriggerReload(triggerReload ? false : true); // this doesn't seem to be doing anything?
   }
   const randomChanged = () => {
     console.log("set random", !random)
     setRandom(!random);
   }
 
+  /*
+  // we have disabled selecting from list item in queue
+  // so if we have an index, we can't be selecting from queue
+  option 1: queue playing and ndx undefined, select from vidbar current queue song
+  option 2: queue not playing, select from vidbar current playlist song
+  option 3: queue not playing, select from item
+  */
+  const pushToQueue = (ndx) => {
+    setHideQueue(false);
+    let vids = qVideos ? qVideos : [];
+    console.log("push to queue ndx, current qVideos", ndx, qVideos);
+
+    if (isQueuePlaying && ndx === undefined) {
+      setQVideos([...vids, qVideos[qIndex]])
+      return;
+    }
+
+    let list = videoSubset ? videoSubset : videos;
+    if (ndx !== undefined) { // selected from playlist
+      setQVideos([...vids, list[ndx]])
+    } else { // no ndx, take current video i.e. selected from videoBar
+      setQVideos([...vids, list[index]])
+    }
+  }
+
   return (
     (videos ?
       <>
-        <Navbar searchHandler={searchHandler} setRandom={randomChanged} random={random} channels={sortedChannels} />
+        <Navbar
+          toggleQueue={() => setHideQueue(!hideQueue)}
+          searchHandler={searchHandler}
+          setRandom={randomChanged}
+          random={random} channels={sortedChannels}
+        />
         <Stack
           height={2000}
           direction={"column"}
           className='main-stk'>
           <VideoPlayer
-            video={videoSubset ? videoSubset[index].snippet : videos[index].snippet}
+            video={videoDetails}
             videoFinished={videoFinished}
           />
-          <VideoBar video={VideoDetails} setChannel={searchHandler} triggerReload={triggerReload} skip={videoFinished} />
+          <VideoBar
+            video={videoDetails}
+            setChannel={searchHandler}
+            triggerReload={triggerReload}
+            skip={videoFinished}
+            pushToQueue={pushToQueue}
+          />
           <Box className='bottom-half' px={1} py={{ md: 1, xs: 5 }}>
-            <div className='left-side-of-playlist'>
+            <div className={`left-side-of-playlist ${hideQueue ? "hide-child" : ""}`}>
+              {/*This first Videos component is the queue */}
+              <Videos
+                videos={qVideos} isQueue={true}
+                curNdx={qIndex} videoSelected={videoSelected}
+              />
             </div>
             <Videos
-              videos={videoSubset ? videoSubset : videos}
-              curNdx={index} videoSelected={videoSelected}
+              videos={videoSubset ? videoSubset : videos} pushToQueue={pushToQueue}
+              curNdx={index} videoSelected={videoSelected} isQueue={false}
             />
-            <SideBar video={VideoDetails} addLikes={addLikes} />
+            <SideBar
+              video={videoDetails}
+              addLikes={addLikes}
+              triggerReload={triggerReload}
+              skip={videoFinished}
+              pushToQueue={pushToQueue}
+            />
           </Box>
           {/*<Videos videos={videos} />*/}
         </Stack>

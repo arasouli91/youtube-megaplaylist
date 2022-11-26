@@ -18,42 +18,33 @@ const root = process.env.REACT_APP_NETLIFY_ROOT ? process.env.REACT_APP_NETLIFY_
 // but if we are managing index, the parent will want to know as well
 // so let us just tell the parent everytime a video finishes
 
-const VideoBar = ({ video, setChannel, skip }) => {
+const VideoBar = ({ video, setChannel, skip, pushToQueue }) => {
   if (!video) <Loader />;
   const [localLikes, setLocalLikes] = useState(video?.likes);
 
   useEffect(() => {
-    console.log("video changed", video);
+    console.log("videobar: video changed", video);
     setLocalLikes(video?.likes)
   }, [video?.likes]);
 
 
   const handleLikes = async (likes) => {
-    /////TODO: we can't guarantee that video object has ._id
     setLocalLikes(localLikes + likes);
-    await fetch(root + `/.netlify/functions/like?id=${video._id}&likes=${likes}`)
+    await fetch(root + `/.netlify/functions/like?id=${video.resourceId.videoId}&likes=${likes}`)
   }
   const setEnd = async (likes) => {
     const end = -1; // idk how to get current time
-    await fetch(root + `/.netlify/functions/setStartEnd?id=${video._id}&end=${end}`)
+    await fetch(root + `/.netlify/functions/setStartEnd?id=${video.resourceId.videoId}&end=${end}`)
     skip();
   }
   const setStart = async () => {
     const start = -1; // idk how to get current time
     // maybe have to set time when song starts
-    await fetch(root + `/.netlify/functions/setStartEnd?id=${video._id}&likes=${start}`)
-  }
-  const pushToQueue = async () => {
-    ///// playlist should manage queue state, then we can go to a separate page
-    ///// we have a top menu, which is owned by playlist
-    ///// this will navigate us to queue page
-    ////// or, it would be really cool if we could see the queue side by side
-    //// with normal playlist, then we can just click into whichever we want
-    //// amd continue to add to the queue, fuck that is so good!!!!
-    //// we should have add to queue button on the songs themselves
-    //// and probably want to have like/dislike on songs themselves
+    await fetch(root + `/.netlify/functions/setStartEnd?id=${video.resourceId.videoId}&likes=${start}`)
   }
 
+  //// we should have add to queue button on the songs themselves
+  //// and probably want to have like/dislike on songs themselves
   return (
     <>
       {video && (
@@ -61,7 +52,7 @@ const VideoBar = ({ video, setChannel, skip }) => {
           <div className='vid-bar'>
             <div className='vid-bar-item1'>
               {video?.title}
-              {/*THIS SHOULD SET SEARCH TO CHANNEL TITLE*/}
+              {/*THIS SETS SEARCH TO CHANNEL TITLE*/}
               <div className='vid-bar-link'
                 onClick={(e) => setChannel(video?.videoOwnerChannelTitle)}>
                 {video?.videoOwnerChannelTitle}
