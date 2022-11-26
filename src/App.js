@@ -19,7 +19,7 @@ const App = () => {
         }}
       >
         <Switch>
-          <Route exact path='/xxx' component={Playlist} />
+          <Route exact path='/xxx' component={Playlist} useMetrics={true} />
           <Route exact path='/' component={Playlist} useMetrics={false} />
         </Switch>
       </Box>
