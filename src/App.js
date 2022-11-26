@@ -20,7 +20,7 @@ const App = () => {
       >
         <Switch>
           <Route exact path='/xxx' component={Playlist} />
-          <Route exact path='/' component={Playlist} disableMetrics={true} />
+          <Route exact path='/' component={Playlist} useMetrics={false} />
         </Switch>
       </Box>
     </Router>
