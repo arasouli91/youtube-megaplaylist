@@ -13,20 +13,18 @@ import {
 import Loader from './Loader';
 
 const HEIGHT_OFFSET = 79 + 206 + 90 + 80;
-const Videos = ({ videos, curNdx, videoSelected, isQueue, pushToQueue }) => {
+const Videos = ({ videos, curNdx, videoSelected, isQueue, pushToQueue, useMetrics, triggerReload }) => {
   const listRef = React.createRef();
   const [listWidth, setListWidth] = useState(isQueue ? 500 : 660);
   const [listHeight, setListHeight] = useState(document.documentElement.clientHeight - HEIGHT_OFFSET);
 
-
   useEffect(() => {
-    setTimeout(displayWindowSize, 500);
+    setTimeout(windowSize, 500);
   }, []);
 
-  function displayWindowSize() {
-    if (document.documentElement.clientWidth <= 660)
-      setListWidth(document.documentElement.clientWidth);
-  }
+  useEffect(() => {
+    listRef?.current?.scrollToItem(0);
+  }, [videos]);
 
   useEffect(() => {
     console.log("inside scrollToItem useEffect, curNdx" + curNdx)
@@ -148,6 +146,7 @@ const Videos = ({ videos, curNdx, videoSelected, isQueue, pushToQueue }) => {
             <div className="flex-center mt-2">
               <Button onClick={(e) => listRef.current.scrollToItem(curNdx)} className="btn1" variant="dark">SCROLL TO CURRENT SONG</Button>
             </div>
+            <span className={`metrics-txt flex-center mt-2 ${isQueue ? "hide" : ""}`}>{useMetrics ? "METRICS ON" : "METRICS OFF"}</span>
           </Box>
         </div>
       </>
@@ -158,8 +157,6 @@ const Videos = ({ videos, curNdx, videoSelected, isQueue, pushToQueue }) => {
 }
 
 export default Videos;
-
-
 
 function findFirstThumbnail(thumbs) {
   if (thumbs === null) {

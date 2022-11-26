@@ -17,7 +17,7 @@ import SubscriptionsIcon from '@mui/icons-material/Subscriptions';
 import QueueMusicIcon from '@mui/icons-material/QueueMusic';
 import Home from '@mui/icons-material/Home';
 
-const Navbar = ({ searchHandler, setRandom, random, channels, toggleQueue }) => {
+const Navbar = ({ searchHandler, setRandom, useMetrics, random, channels, toggleQueue }) => {
   const [localRandom, setLocalRandom] = React.useState(random);
   const [anchorEl1, setAnchorEl2] = React.useState(null);
   const [anchorEl2, setAnchorEl1] = React.useState(null);

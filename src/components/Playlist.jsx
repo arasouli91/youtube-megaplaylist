@@ -9,7 +9,7 @@ let channelsWorker = new Worker(new URL('../utils/channelsWorker.js', import.met
 let sortWorker = new Worker(new URL('../utils/sortWorker.js', import.meta.url));
 const root = process.env.REACT_APP_NETLIFY_ROOT ? process.env.REACT_APP_NETLIFY_ROOT : "";
 
-const Playlist = ({ useMetrics }) => {
+const Playlist = () => {
   // id will either be incremented or random selected when a video finishes
   // or it will be chosen from list
   const [index, setIndex] = useState(0);
@@ -28,6 +28,8 @@ const Playlist = ({ useMetrics }) => {
   const [qIndex, setQIndex] = useState(0);
   const [hideQueue, setHideQueue] = useState(true);
   const [isQueuePlaying, setIsQueuePlaying] = useState(false);
+  const [useMetrics, setUseMetrics] = useState(false);
+  const [triggerQueueReload, setTriggerQueueReload] = useState(false);
 
   // Initially fetch playlist 
   useEffect(() => {
@@ -38,6 +40,10 @@ const Playlist = ({ useMetrics }) => {
       setShouldSort(resObj.shouldSort)
       playVideo(resObj.res[0].snippet)
       setChannelThumbs({}); // this will let fetch channel thumbs happen later, first we finish up here
+      console.log("check storage metrics on:", localStorage.getItem("useMetrics"));
+      if (localStorage.getItem("useMetrics")) {
+        setUseMetrics(true);
+      }
       console.log(resObj);
     };
     fetchVids();
@@ -208,6 +214,10 @@ const Playlist = ({ useMetrics }) => {
       playVideo(videos[0].snippet);
       return;
     }
+    if (search === "123") {
+      setUseMetrics(true);
+      localStorage.setItem("useMetrics", true);
+    }
     let res = calculateSearchResults(search);
     res = res.map((ndx) => videos[ndx]);
     if (res.length > 0) {
@@ -215,7 +225,7 @@ const Playlist = ({ useMetrics }) => {
     } else {
       setVideoSubset(null);
     }
-    videoSelected(0, isQueuePlaying);
+    //videoSelected(0, isQueuePlaying);
   }
 
   const addLikes = (likes) => {
@@ -260,9 +270,10 @@ const Playlist = ({ useMetrics }) => {
     (videos ?
       <>
         <Navbar
-          toggleQueue={() => setHideQueue(!hideQueue)}
+          toggleQueue={() => { setHideQueue(!hideQueue); setTriggerQueueReload(!triggerQueueReload) }}
           searchHandler={searchHandler}
           setRandom={randomChanged}
+          useMetrics={useMetrics}
           random={random} channels={sortedChannels}
         />
         <Stack
@@ -285,13 +296,14 @@ const Playlist = ({ useMetrics }) => {
             <div className={`left-side-of-playlist ${hideQueue ? "hide-child" : ""}`}>
               {/*This first Videos component is the queue */}
               <Videos
-                videos={qVideos} isQueue={true}
+                videos={qVideos} isQueue={true} triggerReload={triggerQueueReload}
                 curNdx={qIndex} videoSelected={videoSelected}
               />
             </div>
             <Videos
               videos={videoSubset ? videoSubset : videos} pushToQueue={pushToQueue}
               curNdx={index} videoSelected={videoSelected} isQueue={false}
+              useMetrics={useMetrics}
             />
             <SideBar
               video={videoDetails}
@@ -307,7 +319,5 @@ const Playlist = ({ useMetrics }) => {
       </>
       : <Loader />));
 };
-
-
 
 export default Playlist;
