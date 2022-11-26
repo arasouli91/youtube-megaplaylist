@@ -10,10 +10,6 @@ const VideoPlayer = ({ video, videoFinished }) => {
   // no, there isn't actually a percentage that makes the height appropriate across resolutions
   const [height, setHeight] = useState(document.documentElement.clientHeight * .15);
 
-  useEffect(() => {
-    setTimeout(displayWindowSize, 800);
-  }, []);
-
   function displayWindowSize() {
     setWidth(document.documentElement.clientWidth);
   }

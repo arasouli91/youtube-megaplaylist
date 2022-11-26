@@ -17,6 +17,17 @@ const Videos = ({ videos, curNdx, videoSelected, isQueue, pushToQueue }) => {
   const listRef = React.createRef();
   const [listWidth, setListWidth] = useState(isQueue ? 500 : 660);
   const [listHeight, setListHeight] = useState(document.documentElement.clientHeight - HEIGHT_OFFSET);
+
+
+  useEffect(() => {
+    setTimeout(displayWindowSize, 500);
+  }, []);
+
+  function displayWindowSize() {
+    if (document.documentElement.clientWidth < 660)
+      setListWidth(document.documentElement.clientWidth);
+  }
+
   useEffect(() => {
     console.log("inside scrollToItem useEffect, curNdx" + curNdx)
     listRef?.current?.scrollToItem(curNdx);

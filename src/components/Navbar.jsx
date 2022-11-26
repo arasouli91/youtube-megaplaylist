@@ -23,10 +23,15 @@ const Navbar = ({ searchHandler, setRandom, random, channels, toggleQueue }) => 
   const [anchorEl2, setAnchorEl1] = React.useState(null);
   const open1 = Boolean(anchorEl1);
   const open2 = Boolean(anchorEl2);
+  const imgs = []
   const handleClick = (event) => {
     setAnchorEl1(event.currentTarget);
   };
   const handleTopChannelsClick = (event) => {
+    for (let i = 0; i < channels.length; i++) {
+      imgs.push(new Image());
+      imgs[i].src = channels[i].thumb;
+    }
     setAnchorEl2(event.currentTarget);
   };
   const handleClose = () => {
