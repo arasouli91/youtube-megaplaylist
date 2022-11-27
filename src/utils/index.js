@@ -1,7 +1,7 @@
 let worker = new Worker(new URL('./worker.js', import.meta.url));
 let searchDictWorker = new Worker(new URL('./searchDictWorker.js', import.meta.url));
 
-const SORT_LIST_THRESHOLD = 30; // this also exists in sortWorker as INITIAL_LEN
+export const SORT_LIST_THRESHOLD = 30; // this also exists in sortWorker as INITIAL_LEN
 const GET_NEW_LIST_THRESHOLD = 50; // needs to be 50 bcuz that's the most we return from one api call
 /////const GEN_SEARCH_DICT_THRESHOLD = 0;
 /////if we dont always generate it then we can't search for songs that appear at top....
@@ -158,17 +158,19 @@ export const buildSearchDictionary = (playlist) => {
   searchDictWorker.postMessage({ playlist: playlist });
 }
 
-export const calculateSearchResults = (term) => {
+export const calculateSearchResults = (term, videos, videoRanks) => {
   const dict = sessionStorage.getObj("searchDict")
-  const words = term.split(' ');
+  const words = term.split(/[^\w]/);
+  // maps indexes of the sorted playlist to counts of term occurences
   const ndxCounts = {};
   for (var k = 0; k < words.length; ++k) {
     let word = words[k].replace(/[^\w]/g, '');
     if (word.length === 0 || word === ' ') continue;
     word = word.toLowerCase();
 
+    // if any song maps to this word
     if (dict[word]) {
-      // for each index that maps to this word, count it
+      // for each index(song) that maps to this word, count it
       Object.keys(dict[word]).forEach((ndx) => {
         // count index
         if (!ndxCounts[ndx]) {
@@ -179,8 +181,18 @@ export const calculateSearchResults = (term) => {
       });
     }
   }
-
-  return Object.keys(ndxCounts).sort((a, b) => ndxCounts[b] - ndxCounts[a])
+  return Object.keys(ndxCounts).sort((a, b) => {
+    // if counts are equal, sort by metrics....may have been unneccesary, but not sure why/if it was already sorted 2ndly by metric
+    if (ndxCounts[b] === ndxCounts[a]) {
+      // get the ids from videos so we can compare ranks stored in videoRanks
+      let vidbID = videos[b].snippet.resourceId.videoId;
+      let vidaID = videos[a].snippet.resourceId.videoId;
+      let rankA = videoRanks[vidaID], rankB = videoRanks[vidbID];
+      return rankA - rankB; // ranks are asc where min is top, so we want asc here
+    } else {
+      return ndxCounts[b] - ndxCounts[a]; // desc order of count
+    }
+  })
 }
 
 
