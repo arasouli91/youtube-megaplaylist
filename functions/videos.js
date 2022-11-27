@@ -8,8 +8,7 @@ const { MongoClient } = require("mongodb");
 const mongoClient = new MongoClient(process.env.REACT_APP_MONGODB_URI);
 
 const clientPromise = mongoClient.connect();
-///// I AM NOT SURE AT ALL IF I HAVE EVERYTHING MAKING SENSE ABOUT
-///// WHAT IS RETURNING AWAITING AND .json()
+
 const handler = async (event) => {
     try {
         let results;
