@@ -146,10 +146,3 @@ exports.handler = async function (event, context) {
 ///// IT EASIEST TO WORK WITH QUERY STRING PARAMS
 ////// event.path split("/") get last token, this is path params
 ///// event.queryStringParameters["key"]
-/*
-
-queryStringParameters: { ASS: '666', BITCH: '420420420' },
-multiValueQueryStringParameters: { ASS: [ '666' ], BITCH: [ '420420420' ] },
-body: '{\r\n    "test":"TEST DATA DASDASDASDASDASDASDASD"\r\n}',
-path: '/.netlify/functions/videos/123456789',
-*/
