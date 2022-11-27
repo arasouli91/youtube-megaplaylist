@@ -18,8 +18,8 @@ const mongoClient = new MongoClient(process.env.REACT_APP_MONGODB_URI);
 const clientPromise = mongoClient.connect();
 
 /*
-queryStringParameters: { ASS: '666', BITCH: '420420420' },
-multiValueQueryStringParameters: { ASS: [ '666' ], BITCH: [ '420420420' ] },
+queryStringParameters: { TEST: 'TEST', TEST2: 'TEST222' },
+multiValueQueryStringParameters: { TEST: [ 'TEST' ], TEST2: [ 'TEST222' ] },
 body: '{\r\n    "test":"TEST DATA DASDASDASDASDASDASDASD"\r\n}',
 path: '/.netlify/functions/videos/123456789',
 */
