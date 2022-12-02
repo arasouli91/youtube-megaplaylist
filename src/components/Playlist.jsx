@@ -84,6 +84,8 @@ const Playlist = () => {
         console.log("  build search dictionary")
         buildSearchDictionary(videos);
       }
+      //if (videos.length < 6000)
+      //setVideos([...videos, ...videos, ...videos, ...videos, ...videos, ...videos, ...videos, ...videos, ...videos, ...videos, ...videos, ...videos, ...videos, ...videos, ...videos, ...videos, ...videos, ...videos, ...videos, ...videos, ...videos, ...videos, ...videos, ...videos, ...videos, ...videos, ...videos, ...videos, ...videos, ...videos, ...videos, ...videos, ...videos, ...videos, ...videos, ...videos, ...videos, ...videos, ...videos, ...videos, ...videos, ...videos, ...videos, ...videos, ...videos, ...videos, ...videos, ...videos, ...videos, ...videos, ...videos, ...videos, ...videos, ...videos, ...videos])/////////////////////////TODO:DELETE DELETE DELETE
     }
     console.log(`index ${index}`);
   }, [videos, videoRanks]);

@@ -23,6 +23,10 @@ const Videos = ({ videos, curNdx, videoSelected, isQueue, pushToQueue, useMetric
   }, []);
 
   useEffect(() => {
+    windowSize();
+  }, [triggerReload]);
+
+  useEffect(() => {
     listRef?.current?.scrollToItem(0);
   }, [videos]);
 
@@ -45,6 +49,7 @@ const Videos = ({ videos, curNdx, videoSelected, isQueue, pushToQueue, useMetric
       else {
         setListWidth(500);
       }
+      setListHeight(document.documentElement.clientHeight - HEIGHT_OFFSET);
       return;
     }
     if (document.documentElement.clientWidth < 680) {
