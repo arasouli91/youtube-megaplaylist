@@ -33,7 +33,7 @@ const Playlist = () => {
   // Initially fetch playlist 
   useEffect(() => {
     const fetchVids = async () => {
-      let resObj = await youTubeFetch(["PLmIkV2QRPyhkiEl9jxtKvpIRg50n0rfSj", "PLmIkV2QRPyhk2bbw0_PNWb_mv7NGY4kwC"]);
+      let resObj = await youTubeFetch(["PLmIkV2QRPyhk2bbw0_PNWb_mv7NGY4kwC", "PLmIkV2QRPyhkiEl9jxtKvpIRg50n0rfSj",]);
       setVideos(resObj.res)
       setShouldSort(resObj.shouldSort)
       playVideo(resObj.res[0].snippet)
