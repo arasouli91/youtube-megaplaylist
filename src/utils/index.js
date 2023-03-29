@@ -74,6 +74,9 @@ export const youTubeFetch = async (playlist_ids) => {
       }
       ++i;
     }
+    // update prev len (of main playlist), going forward we compare against last time we fetched everything
+    localStorage.setItem("prevLength", resObj.res.length);
+
     // since we did not return cached playlist, at this point means we will be return all remote
     // now let us get from secondary playlists
     let secondaryPlaylistsRes = await getSecondaryPlaylists(playlist_ids);
@@ -82,8 +85,6 @@ export const youTubeFetch = async (playlist_ids) => {
 
     // returned whole remote playlist
     console.log("return remote list, resObj", resObj)
-    // update prev len, going forward we compare against last time we fetched everything
-    localStorage.setItem("prevLength", resObj.res.length);
     return resObj // shouldSort will be true
   }
   catch (e) {
